@@ -2,32 +2,32 @@ fn main() {
     println!("Hello, world!");
 }
 
-fn bool_nand(a: bool, b: bool) -> bool {
+fn nand(a: bool, b: bool) -> bool {
     !(a && b)
 }
 
-fn bool_not(a: bool) -> bool {
-    bool_nand(a, a)
+fn not(a: bool) -> bool {
+    nand(a, a)
 }
 
-fn bool_and(a: bool, b: bool) -> bool {
-    bool_not(bool_nand(a, b))
+fn and(a: bool, b: bool) -> bool {
+    not(nand(a, b))
 }
 
-fn bool_or(a: bool, b: bool) -> bool {
-    bool_nand(bool_not(a), bool_not(b))
+fn or(a: bool, b: bool) -> bool {
+    nand(not(a), not(b))
 }
 
-fn bool_xor(a: bool, b: bool) -> bool {
-    bool_nand(bool_nand(a, bool_nand(a, b)), bool_nand(b, bool_nand(a, b)))
+fn xor(a: bool, b: bool) -> bool {
+    nand(nand(a, nand(a, b)), nand(b, nand(a, b)))
 }
 
-fn bool_mux(a: bool, b: bool, sel: bool) -> bool {
-    bool_or(bool_and(a, bool_not(sel)), bool_and(b, sel))
+fn mux(a: bool, b: bool, sel: bool) -> bool {
+    or(and(a, not(sel)), and(b, sel))
 }
 
-fn bool_dmux(a: bool, sel: bool) -> (bool, bool) {
-    (bool_and(bool_not(sel), a), bool_and(sel, a))
+fn dmux(a: bool, sel: bool) -> (bool, bool) {
+    (and(not(sel), a), and(sel, a))
 }
 
 #[cfg(test)]
@@ -35,60 +35,60 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_bool_nand() {
-        assert_eq!(true, bool_nand(false, false));
-        assert_eq!(true, bool_nand(true, false));
-        assert_eq!(true, bool_nand(false, true));
-        assert_eq!(false, bool_nand(true, true));
+    fn test_nand() {
+        assert_eq!(true, nand(false, false));
+        assert_eq!(true, nand(true, false));
+        assert_eq!(true, nand(false, true));
+        assert_eq!(false, nand(true, true));
     }
 
     #[test]
-    fn test_bool_not() {
-        assert_eq!(true, bool_not(false));
-        assert_eq!(false, bool_not(true));
+    fn test_not() {
+        assert_eq!(true, not(false));
+        assert_eq!(false, not(true));
     }
 
     #[test]
-    fn test_bool_and() {
-        assert_eq!(false, bool_and(false, false));
-        assert_eq!(false, bool_and(true, false));
-        assert_eq!(false, bool_and(false, true));
-        assert_eq!(true, bool_and(true, true));
+    fn test_and() {
+        assert_eq!(false, and(false, false));
+        assert_eq!(false, and(true, false));
+        assert_eq!(false, and(false, true));
+        assert_eq!(true, and(true, true));
     }
 
     #[test]
-    fn test_bool_or() {
-        assert_eq!(false, bool_or(false, false));
-        assert_eq!(true, bool_or(true, false));
-        assert_eq!(true, bool_or(false, true));
-        assert_eq!(true, bool_or(true, true));
+    fn test_or() {
+        assert_eq!(false, or(false, false));
+        assert_eq!(true, or(true, false));
+        assert_eq!(true, or(false, true));
+        assert_eq!(true, or(true, true));
     }
 
     #[test]
-    fn test_bool_xor() {
-        assert_eq!(false, bool_xor(false, false));
-        assert_eq!(true, bool_xor(true, false));
-        assert_eq!(true, bool_xor(false, true));
-        assert_eq!(false, bool_xor(true, true));
+    fn test_xor() {
+        assert_eq!(false, xor(false, false));
+        assert_eq!(true, xor(true, false));
+        assert_eq!(true, xor(false, true));
+        assert_eq!(false, xor(true, true));
     }
 
     #[test]
-    fn test_bool_mux() {
-        assert_eq!(false, bool_mux(false, false, false));
-        assert_eq!(false, bool_mux(false, true, false));
-        assert_eq!(true, bool_mux(true, false, false));
-        assert_eq!(true, bool_mux(true, true, false));
-        assert_eq!(false, bool_mux(false, false, true));
-        assert_eq!(true, bool_mux(false, true, true));
-        assert_eq!(false, bool_mux(true, false, true));
-        assert_eq!(true, bool_mux(true, true, true));
+    fn test_mux() {
+        assert_eq!(false, mux(false, false, false));
+        assert_eq!(false, mux(false, true, false));
+        assert_eq!(true, mux(true, false, false));
+        assert_eq!(true, mux(true, true, false));
+        assert_eq!(false, mux(false, false, true));
+        assert_eq!(true, mux(false, true, true));
+        assert_eq!(false, mux(true, false, true));
+        assert_eq!(true, mux(true, true, true));
     }
 
     #[test]
-    fn test_bool_dmux() {
-        assert_eq!((false, false), bool_dmux(false, false));
-        assert_eq!((false, false), bool_dmux(false, true));
-        assert_eq!((true, false), bool_dmux(true, false));
-        assert_eq!((false, true), bool_dmux(true, true));
+    fn test_dmux() {
+        assert_eq!((false, false), dmux(false, false));
+        assert_eq!((false, false), dmux(false, true));
+        assert_eq!((true, false), dmux(true, false));
+        assert_eq!((false, true), dmux(true, true));
     }
 }
