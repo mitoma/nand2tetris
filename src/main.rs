@@ -30,6 +30,14 @@ fn dmux(a: bool, sel: bool) -> (bool, bool) {
     (and(not(sel), a), and(sel, a))
 }
 
+fn not16(ass: [bool; 16]) -> [bool; 16] {
+    let mut result = [false; 16];
+    for i in 0..ass.len() {
+        result[i] = not(ass[i]);
+    }
+    result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
