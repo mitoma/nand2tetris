@@ -1,33 +1,111 @@
-fn nand(a: bool, b: bool) -> bool {
+/// nand gate
+///
+/// # Example
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!(true, nand(false, false));
+/// assert_eq!(true, nand(true, false));
+/// assert_eq!(true, nand(false, true));
+/// assert_eq!(false, nand(true, true));
+/// ```
+pub fn nand(a: bool, b: bool) -> bool {
     !(a && b)
 }
 
-fn not(a: bool) -> bool {
+/// not gate
+///
+/// # Example
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!(true, not(false));
+/// assert_eq!(false, not(true));
+/// ```
+pub fn not(a: bool) -> bool {
     nand(a, a)
 }
 
-fn and(a: bool, b: bool) -> bool {
+/// and gate
+///
+/// # Example
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!(false, and(false, false));
+/// assert_eq!(false, and(true, false));
+/// assert_eq!(false, and(false, true));
+/// assert_eq!(true, and(true, true));
+/// ```
+pub fn and(a: bool, b: bool) -> bool {
     not(nand(a, b))
 }
 
-fn or(a: bool, b: bool) -> bool {
+/// or gate
+///
+/// # Example
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!(false, or(false, false));
+/// assert_eq!(true, or(true, false));
+/// assert_eq!(true, or(false, true));
+/// assert_eq!(true, or(true, true));
+/// ```
+pub fn or(a: bool, b: bool) -> bool {
     nand(not(a), not(b))
 }
 
-fn xor(a: bool, b: bool) -> bool {
+/// xor gate
+///
+/// # Example
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!(false, xor(false, false));
+/// assert_eq!(true, xor(true, false));
+/// assert_eq!(true, xor(false, true));
+/// assert_eq!(false, xor(true, true));
+/// ```
+pub fn xor(a: bool, b: bool) -> bool {
     nand(nand(a, nand(a, b)), nand(b, nand(a, b)))
 }
 
-fn mux(a: bool, b: bool, sel: bool) -> bool {
+/// mux gate
+///
+/// # Example
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!(false, mux(false, false, false));
+/// assert_eq!(false, mux(false, true, false));
+/// assert_eq!(true, mux(true, false, false));
+/// assert_eq!(true, mux(true, true, false));
+/// assert_eq!(false, mux(false, false, true));
+/// assert_eq!(true, mux(false, true, true));
+/// assert_eq!(false, mux(true, false, true));
+/// assert_eq!(true, mux(true, true, true));
+/// ```
+pub fn mux(a: bool, b: bool, sel: bool) -> bool {
     or(and(a, not(sel)), and(b, sel))
 }
 
-fn dmux(a: bool, sel: bool) -> [bool; 2] {
+/// dmux gate
+///
+/// # Example
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!([false, false], dmux(false, false));
+/// assert_eq!([false, false], dmux(false, true));
+/// assert_eq!([true, false], dmux(true, false));
+/// assert_eq!([false, true], dmux(true, true));
+/// ```
+pub fn dmux(a: bool, sel: bool) -> [bool; 2] {
     [and(not(sel), a), and(sel, a)]
 }
 
-// multi gate
-fn not16(a: [bool; 16]) -> [bool; 16] {
+pub fn not16(a: [bool; 16]) -> [bool; 16] {
     [
         not(a[0]),
         not(a[1]),
@@ -48,7 +126,7 @@ fn not16(a: [bool; 16]) -> [bool; 16] {
     ]
 }
 
-fn and16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
+pub fn and16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
     [
         and(a[0], b[0]),
         and(a[1], b[1]),
@@ -69,7 +147,7 @@ fn and16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
     ]
 }
 
-fn or16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
+pub fn or16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
     [
         or(a[0], b[0]),
         or(a[1], b[1]),
@@ -90,7 +168,7 @@ fn or16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
     ]
 }
 
-fn mux16(a: [bool; 16], b: [bool; 16], sel: bool) -> [bool; 16] {
+pub fn mux16(a: [bool; 16], b: [bool; 16], sel: bool) -> [bool; 16] {
     [
         mux(a[0], b[0], sel),
         mux(a[1], b[1], sel),
@@ -111,18 +189,18 @@ fn mux16(a: [bool; 16], b: [bool; 16], sel: bool) -> [bool; 16] {
     ]
 }
 
-fn or8way(a: [bool; 8]) -> bool {
+pub fn or8way(a: [bool; 8]) -> bool {
     or(
         or(or(a[0], a[1]), or(a[2], a[3])),
         or(or(a[4], a[5]), or(a[6], a[7])),
     )
 }
 
-fn mux4(a: bool, b: bool, c: bool, d: bool, sel: [bool; 2]) -> bool {
+pub fn mux4(a: bool, b: bool, c: bool, d: bool, sel: [bool; 2]) -> bool {
     mux(mux(a, b, sel[1]), mux(c, d, sel[1]), sel[0])
 }
 
-fn mux8(
+pub fn mux8(
     a: bool,
     b: bool,
     c: bool,
@@ -140,7 +218,7 @@ fn mux8(
     )
 }
 
-fn mux4way16(
+pub fn mux4way16(
     a: [bool; 16],
     b: [bool; 16],
     c: [bool; 16],
@@ -167,7 +245,7 @@ fn mux4way16(
     ]
 }
 
-fn mux8way16(
+pub fn mux8way16(
     a: [bool; 16],
     b: [bool; 16],
     c: [bool; 16],
@@ -198,7 +276,21 @@ fn mux8way16(
     ]
 }
 
-fn dmux4way(a: bool, sel: [bool; 2]) -> [bool; 4] {
+/// dmux4way gate
+///
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!(true, mux4(true, false, false, false, [false, false]));
+/// assert_eq!(false, mux4(false, false, false, false, [false, false]));
+/// assert_eq!(true, mux4(false, true, false, false, [false, true]));
+/// assert_eq!(false, mux4(false, false, false, false, [false, true]));
+/// assert_eq!(true, mux4(false, false, true, false, [true, false]));
+/// assert_eq!(false, mux4(false, false, false, false, [true, false]));
+/// assert_eq!(true, mux4(false, false, false, true, [true, true]));
+/// assert_eq!(false, mux4(true, false, false, false, [true, true]));
+/// ```
+pub fn dmux4way(a: bool, sel: [bool; 2]) -> [bool; 4] {
     [
         and(and(a, not(sel[0])), not(sel[1])),
         and(and(a, not(sel[0])), sel[1]),
@@ -207,7 +299,21 @@ fn dmux4way(a: bool, sel: [bool; 2]) -> [bool; 4] {
     ]
 }
 
-fn dmux8way(a: bool, sel: [bool; 3]) -> [bool; 8] {
+/// dmux8way gate
+///
+/// ```
+/// use nand2tetlis::*;
+///
+/// assert_eq!([true, false, false, false, false, false, false, false], dmux8way(true, [false, false, false]));
+/// assert_eq!([false, true, false, false, false, false, false, false], dmux8way(true, [false, false, true]));
+/// assert_eq!([false, false, true, false, false, false, false, false], dmux8way(true, [false, true, false]));
+/// assert_eq!([false, false, false, true, false, false, false, false], dmux8way(true, [false, true, true]));
+/// assert_eq!([false, false, false, false, true, false, false, false], dmux8way(true, [true, false, false]));
+/// assert_eq!([false, false, false, false, false, true, false, false], dmux8way(true, [true, false, true]));
+/// assert_eq!([false, false, false, false, false, false, true, false], dmux8way(true, [true, true, false]));
+/// assert_eq!([false, false, false, false, false, false, false, true], dmux8way(true, [true, true, true]));
+/// ```
+pub fn dmux8way(a: bool, sel: [bool; 3]) -> [bool; 8] {
     [
         and(and(and(a, not(sel[0])), not(sel[1])), not(sel[2])),
         and(and(and(a, not(sel[0])), not(sel[1])), (sel[2])),
@@ -218,106 +324,4 @@ fn dmux8way(a: bool, sel: [bool; 3]) -> [bool; 8] {
         and(and(and(a, (sel[0])), (sel[1])), not(sel[2])),
         and(and(and(a, (sel[0])), (sel[1])), (sel[2])),
     ]
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_nand() {
-        assert_eq!(true, nand(false, false));
-        assert_eq!(true, nand(true, false));
-        assert_eq!(true, nand(false, true));
-        assert_eq!(false, nand(true, true));
-    }
-
-    #[test]
-    fn test_not() {
-        assert_eq!(true, not(false));
-        assert_eq!(false, not(true));
-    }
-
-    #[test]
-    fn test_and() {
-        assert_eq!(false, and(false, false));
-        assert_eq!(false, and(true, false));
-        assert_eq!(false, and(false, true));
-        assert_eq!(true, and(true, true));
-    }
-
-    #[test]
-    fn test_or() {
-        assert_eq!(false, or(false, false));
-        assert_eq!(true, or(true, false));
-        assert_eq!(true, or(false, true));
-        assert_eq!(true, or(true, true));
-    }
-
-    #[test]
-    fn test_xor() {
-        assert_eq!(false, xor(false, false));
-        assert_eq!(true, xor(true, false));
-        assert_eq!(true, xor(false, true));
-        assert_eq!(false, xor(true, true));
-    }
-
-    #[test]
-    fn test_mux() {
-        assert_eq!(false, mux(false, false, false));
-        assert_eq!(false, mux(false, true, false));
-        assert_eq!(true, mux(true, false, false));
-        assert_eq!(true, mux(true, true, false));
-        assert_eq!(false, mux(false, false, true));
-        assert_eq!(true, mux(false, true, true));
-        assert_eq!(false, mux(true, false, true));
-        assert_eq!(true, mux(true, true, true));
-    }
-
-    #[test]
-    fn test_dmux() {
-        assert_eq!([false, false], dmux(false, false));
-        assert_eq!([false, false], dmux(false, true));
-        assert_eq!([true, false], dmux(true, false));
-        assert_eq!([false, true], dmux(true, true));
-    }
-
-    #[test]
-    fn test_mux4() {
-        assert_eq!(true, mux4(true, false, false, false, [false, false]));
-        assert_eq!(false, mux4(false, false, false, false, [false, false]));
-        assert_eq!(true, mux4(false, true, false, false, [false, true]));
-        assert_eq!(false, mux4(false, false, false, false, [false, true]));
-        assert_eq!(true, mux4(false, false, true, false, [true, false]));
-        assert_eq!(false, mux4(false, false, false, false, [true, false]));
-        assert_eq!(true, mux4(false, false, false, true, [true, true]));
-        assert_eq!(false, mux4(true, false, false, false, [true, true]));
-    }
-
-    #[test]
-    #[cfg_attr(rustfmt, rustfmt_skip)]
-    fn test_dmux4way() {
-        assert_eq!([true, false, false, false], dmux4way(true, [false, false]));
-        assert_eq!([false, false, false, false], dmux4way(false, [false, false]));
-        assert_eq!([false, true, false, false], dmux4way(true, [false, true]));
-        assert_eq!([false, false, false, false], dmux4way(false, [false, true]));
-        assert_eq!([false, false, true, false], dmux4way(true, [true, false]));
-        assert_eq!([false, false, false, false], dmux4way(false, [true, false]));
-        assert_eq!([false, false, false, true], dmux4way(true, [true, true]));
-        assert_eq!([false, false, false, false], dmux4way(false, [true, true]));
-    }
-
-    #[test]
-    #[cfg_attr(rustfmt, rustfmt_skip)]
-    fn test_dmux8way() {
-        assert_eq!([true, false, false, false, false, false, false, false], dmux8way(true, [false, false, false]));
-        assert_eq!([false, true, false, false, false, false, false, false], dmux8way(true, [false, false, true]));
-        assert_eq!([false, false, true, false, false, false, false, false], dmux8way(true, [false, true, false]));
-        assert_eq!([false, false, false, true, false, false, false, false], dmux8way(true, [false, true, true]));
-        assert_eq!([false, false, false, false, true, false, false, false], dmux8way(true, [true, false, false]));
-        assert_eq!([false, false, false, false, false, true, false, false], dmux8way(true, [true, false, true]));
-        assert_eq!([false, false, false, false, false, false, true, false], dmux8way(true, [true, true, false]));
-        assert_eq!([false, false, false, false, false, false, false, true], dmux8way(true, [true, true, true]));
-    }
-
 }
