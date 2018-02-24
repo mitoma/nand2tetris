@@ -1,8 +1,3 @@
-fn main() {
-    println!("Hello, world!");
-}
-
-// basic gate
 fn nand(a: bool, b: bool) -> bool {
     !(a && b)
 }
