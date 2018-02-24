@@ -204,12 +204,24 @@ fn mux8way16(
 }
 
 fn dmux4way(a: bool, sel: [bool; 2]) -> [bool; 4] {
-    let r1 = dmux(a, sel[0]);
     [
-        and(not(sel[1]), r1[0]),
-        and(sel[1], r1[0]),
-        and(not(sel[1]), r1[1]),
-        and(sel[1], r1[1]),
+        and(and(a, not(sel[0])), not(sel[1])),
+        and(and(a, not(sel[0])), sel[1]),
+        and(and(a, sel[0]), not(sel[1])),
+        and(and(a, sel[0]), sel[1]),
+    ]
+}
+
+fn dmux8way(a: bool, sel: [bool; 3]) -> [bool; 8] {
+    [
+        and(and(and(a, not(sel[0])), not(sel[1])), not(sel[2])),
+        and(and(and(a, not(sel[0])), not(sel[1])), (sel[2])),
+        and(and(and(a, not(sel[0])), (sel[1])), not(sel[2])),
+        and(and(and(a, not(sel[0])), (sel[1])), (sel[2])),
+        and(and(and(a, (sel[0])), not(sel[1])), not(sel[2])),
+        and(and(and(a, (sel[0])), not(sel[1])), (sel[2])),
+        and(and(and(a, (sel[0])), (sel[1])), not(sel[2])),
+        and(and(and(a, (sel[0])), (sel[1])), (sel[2])),
     ]
 }
 
@@ -288,11 +300,29 @@ mod tests {
     }
 
     #[test]
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn test_dmux4way() {
         assert_eq!([true, false, false, false], dmux4way(true, [false, false]));
+        assert_eq!([false, false, false, false], dmux4way(false, [false, false]));
         assert_eq!([false, true, false, false], dmux4way(true, [false, true]));
+        assert_eq!([false, false, false, false], dmux4way(false, [false, true]));
         assert_eq!([false, false, true, false], dmux4way(true, [true, false]));
+        assert_eq!([false, false, false, false], dmux4way(false, [true, false]));
         assert_eq!([false, false, false, true], dmux4way(true, [true, true]));
+        assert_eq!([false, false, false, false], dmux4way(false, [true, true]));
+    }
+
+    #[test]
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    fn test_dmux8way() {
+        assert_eq!([true, false, false, false, false, false, false, false], dmux8way(true, [false, false, false]));
+        assert_eq!([false, true, false, false, false, false, false, false], dmux8way(true, [false, false, true]));
+        assert_eq!([false, false, true, false, false, false, false, false], dmux8way(true, [false, true, false]));
+        assert_eq!([false, false, false, true, false, false, false, false], dmux8way(true, [false, true, true]));
+        assert_eq!([false, false, false, false, true, false, false, false], dmux8way(true, [true, false, false]));
+        assert_eq!([false, false, false, false, false, true, false, false], dmux8way(true, [true, false, true]));
+        assert_eq!([false, false, false, false, false, false, true, false], dmux8way(true, [true, true, false]));
+        assert_eq!([false, false, false, false, false, false, false, true], dmux8way(true, [true, true, true]));
     }
 
 }
