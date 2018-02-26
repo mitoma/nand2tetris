@@ -1,3 +1,6 @@
+use const_value;
+use adder::*;
+
 pub fn alu(
     x: [bool; 16],
     y: [bool; 16],
@@ -8,5 +11,6 @@ pub fn alu(
     f: bool,
     no: bool,
 ) -> ([bool; 16], bool, bool) {
+    add16(const_value::ZERO, y);
     ([false; 16], false, false)
 }

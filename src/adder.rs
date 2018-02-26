@@ -1,4 +1,5 @@
 use basic_gate::*;
+use const_value;
 
 /// half_adder
 ///
@@ -93,11 +94,5 @@ pub fn add16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
 /// }
 /// ```
 pub fn inc16(a: [bool; 16]) -> [bool; 16] {
-    add16(
-        a,
-        [
-            true, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false,
-        ],
-    )
+    add16(a, const_value::ONE)
 }
