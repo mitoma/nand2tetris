@@ -2,11 +2,11 @@
 //!
 //! # Example
 //! ```
-//! use nand2tetlis::test_util::*;
+//! //use nand2tetlis::test_util::*;
 //! 
-//! for i in i16::min_value()..i16::max_value() {
-//!     assert_eq!(bool_array_to_i16(i16_to_bool_array(i)), i);
-//! }
+//! //for i in i16::min_value()..i16::max_value() {
+//! //    assert_eq!(bool_array_to_i16(i16_to_bool_array(i)), i);
+//! //}
 //! ```
 
 /// i16_to_bool_array
@@ -61,6 +61,10 @@ pub fn i16_to_bool_array(a: i16) -> [bool; 16] {
     ]
 }
 
+pub fn i2b(a: i16) -> [bool; 16] {
+    i16_to_bool_array(a)
+}
+
 /// # Example
 /// ```
 /// use nand2tetlis::test_util::*;
@@ -104,4 +108,8 @@ pub fn bool_array_to_i16(a: [bool; 16]) -> i16 {
     + (if a[13] { 1 << 13 } else { 0 })
     + (if a[14] { 1 << 14 } else { 0 })
     + (if a[15] { 1 << 15 } else { 0 })
+}
+
+pub fn b2i(a: [bool; 16]) -> i16 {
+    bool_array_to_i16(a)
 }
