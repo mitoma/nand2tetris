@@ -48,8 +48,8 @@ pub fn full_adder(a: bool, b: bool, carry: bool) -> [bool; 2] {
 /// use nand2tetlis::adder::*;
 /// use nand2tetlis::test_util::*;
 ///
-/// for i in -1000..1000 {
-///     for j in -1000..1000 {
+/// for i in -100..100 {
+///     for j in -100..100 {
 ///         assert_eq!(i + j,
 ///                    bool_array_to_i16(
 ///                      add16(i16_to_bool_array(i),
@@ -87,7 +87,7 @@ pub fn add16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
 /// use nand2tetlis::adder::*;
 /// use nand2tetlis::test_util::*;
 ///
-/// for i in -1000..1000 {
+/// for i in -100..100 {
 ///     assert_eq!(i + 1,
 ///        bool_array_to_i16(
 ///          inc16(i16_to_bool_array(i))));
