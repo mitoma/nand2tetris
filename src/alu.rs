@@ -39,14 +39,14 @@ pub fn alu(
     return (
         result,
         and(result[0], true),
-        nand(
-            nand(
-                nand(nand(result[0], result[1]), nand(result[2], result[3])),
-                nand(nand(result[4], result[5]), nand(result[6], result[7])),
+        and(
+            and(
+                and(nand(result[0], result[1]), nand(result[2], result[3])),
+                and(nand(result[4], result[5]), nand(result[6], result[7])),
             ),
-            nand(
-                nand(nand(result[8], result[9]), nand(result[10], result[11])),
-                nand(nand(result[12], result[13]), nand(result[14], result[15])),
+            and(
+                and(nand(result[8], result[9]), nand(result[10], result[11])),
+                and(nand(result[12], result[13]), nand(result[14], result[15])),
             ),
         ),
     );
