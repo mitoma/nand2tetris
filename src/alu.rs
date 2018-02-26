@@ -4,6 +4,8 @@ use basic_gate::*;
 use multi_gate::*;
 
 /// 
+/// return (calcd_bit_array, is_negative, is_zero)
+/// 
 /// # Example
 /// ```
 /// use nand2tetlis::test_util::*;
@@ -19,6 +21,12 @@ use multi_gate::*;
 ///   alu(i2b(0b0000_0000_0000_0011i16),
 ///       i2b(0b0000_0000_0000_0001i16),
 ///   false, false, false, false, true, false));
+/// #[warn(overflowing_literals)]
+/// assert_eq!(
+///   (i2b(0b1111_1111_1111_1011i16), true, false),
+///   alu(i2b(0b0000_0000_0000_0011i16),
+///       i2b(0b0000_0000_0000_0001i16),
+///   false, false, false, false, true, true));
 /// ```
 pub fn alu(
     x: [bool; 16],
@@ -56,7 +64,7 @@ pub fn alu(
     let ng_result = not16(result);
     return (
         result,
-        and(result[15], true),
+        result[15],
         and(
             and(
                 and(
