@@ -3,41 +3,6 @@ use adder::*;
 use basic_gate::*;
 use multi_gate::*;
 
-/// 
-/// return (calcd_bit_array, is_negative, is_zero)
-/// 
-/// # Examples
-/// ```
-/// use nand2tetlis::test_util::*;
-/// use nand2tetlis::alu::*;
-///
-/// assert_eq!(
-///   (i2b(0b0000_0000_0000_0001i16), false, false),
-///   alu(i2b(0b0000_0000_0000_0011i16),
-///       i2b(0b0000_0000_0000_0001i16),
-///   false, false, false, false, false, false));
-/// assert_eq!(
-///   (i2b(0b0000_0000_0000_0100i16), false, false),
-///   alu(i2b(0b0000_0000_0000_0011i16),
-///       i2b(0b0000_0000_0000_0001i16),
-///   false, false, false, false, true, false));
-/// #[warn(overflowing_literals)]
-/// assert_eq!(
-///   (i2b(0b1111_1111_1111_1011i16), true, false),
-///   alu(i2b(0b0000_0000_0000_0011i16),
-///       i2b(0b0000_0000_0000_0001i16),
-///   false, false, false, false, true, true));
-/// assert_eq!(
-///   (i2b(0b1010_1010_1010_1010_1010i16), true, false),
-///   alu(i2b(0b0101_0101_0101_0101_0101i16),
-///       i2b(0b1010_1010_1010_1010_1010i16),
-///   false, true, false, false, true, false));
-/// assert_eq!(
-///   (i2b(0b0101_0101_0101_0101_0101i16), false, false),
-///   alu(i2b(0b0101_0101_0101_0101_0101i16),
-///       i2b(0b1010_1010_1010_1010_1010i16),
-///   false, false, false, true, true, false));
-/// ```
 pub fn alu(
     x: [bool; 16],
     y: [bool; 16],
@@ -98,4 +63,88 @@ pub fn alu(
             ),
         ),
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use test_util::*;
+    use super::*;
+
+    #[test]
+    fn and_add_test() {
+        assert_eq!(
+            (i2b(0b0000_0000_0000_0001i16), false, false),
+            alu(
+                i2b(0b0000_0000_0000_0011i16),
+                i2b(0b0000_0000_0000_0001i16),
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            )
+        );
+        assert_eq!(
+            (i2b(0b0000_0000_0000_0100i16), false, false),
+            alu(
+                i2b(0b0000_0000_0000_0011i16),
+                i2b(0b0000_0000_0000_0001i16),
+                false,
+                false,
+                false,
+                false,
+                true,
+                false
+            )
+        );
+    }
+
+    #[test]
+    fn out_test() {
+        assert_eq!(
+            (i2b(0b_1111_1111_1111_1011_i16), true, false),
+            alu(
+                i2b(0b0000_0000_0000_0011i16),
+                i2b(0b0000_0000_0000_0001i16),
+                false,
+                false,
+                false,
+                false,
+                true,
+                true
+            )
+        );
+    }
+
+    #[test]
+    #[warn(overflowing_literals)]
+    fn zx_zy_test() {
+        assert_eq!(
+            (i2b(0b1010_1010_1010_1010_1010_i16), true, false),
+            alu(
+                i2b(0b0101_0101_0101_0101_0101_i16),
+                i2b(0b1010_1010_1010_1010_1010_i16),
+                false,
+                true,
+                false,
+                false,
+                true,
+                false
+            )
+        );
+        assert_eq!(
+            (i2b(0b_0101_0101_0101_0101_0101_i16), false, false),
+            alu(
+                i2b(0b_0101_0101_0101_0101_0101_i16),
+                i2b(0b_1010_1010_1010_1010_1010_i16),
+                false,
+                false,
+                false,
+                true,
+                true,
+                false
+            )
+        );
+    }
 }

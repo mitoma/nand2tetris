@@ -1,62 +1,16 @@
 use basic_gate::*;
 use const_value;
 
-/// half_adder
-///
-/// return [carry, sum]
-///
-/// # Example
-/// ```
-/// use nand2tetlis::adder::*;
-///
-/// assert_eq!([false, false], half_adder(false, false));
-/// assert_eq!([false, true], half_adder(false, true));
-/// assert_eq!([false, true], half_adder(true, false));
-/// assert_eq!([true, false], half_adder(true, true));
-/// ```
 pub fn half_adder(a: bool, b: bool) -> [bool; 2] {
     [and(a, b), xor(a, b)]
 }
 
-/// full_adder
-///
-/// return [carry, sum]
-///
-/// # Example
-/// ```
-/// use nand2tetlis::adder::*;
-///
-/// assert_eq!([false, false], full_adder(false, false, false));
-/// assert_eq!([false, true], full_adder(false, false, true));
-/// assert_eq!([false, true], full_adder(false, true, false));
-/// assert_eq!([true, false], full_adder(false, true, true));
-/// assert_eq!([false, true], full_adder(true, false, false));
-/// assert_eq!([true, false], full_adder(true, false, true));
-/// assert_eq!([true, false], full_adder(true, true, false));
-/// assert_eq!([true, true], full_adder(true, true, true));
-/// ```
 pub fn full_adder(a: bool, b: bool, carry: bool) -> [bool; 2] {
     let tmp1 = half_adder(a, b);
     let tmp2 = half_adder(tmp1[1], carry);
     [or(tmp1[0], tmp2[0]), tmp2[1]]
 }
 
-/// add16
-///
-/// # Example
-/// ```
-/// use nand2tetlis::adder::*;
-/// use nand2tetlis::test_util::*;
-///
-/// for i in -100..100 {
-///     for j in -100..100 {
-///         assert_eq!(i + j,
-///                    bool_array_to_i16(
-///                      add16(i16_to_bool_array(i),
-///                            i16_to_bool_array(j))));
-///     }
-/// }
-/// ```
 pub fn add16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
     let tmp1 = half_adder(a[0], b[0]);
     let tmp2 = full_adder(a[1], b[1], tmp1[0]);
@@ -80,19 +34,52 @@ pub fn add16(a: [bool; 16], b: [bool; 16]) -> [bool; 16] {
     ]
 }
 
-/// inc16
-///
-/// # Example
-/// ```
-/// use nand2tetlis::adder::*;
-/// use nand2tetlis::test_util::*;
-///
-/// for i in -100..100 {
-///     assert_eq!(i + 1,
-///        bool_array_to_i16(
-///          inc16(i16_to_bool_array(i))));
-/// }
-/// ```
 pub fn inc16(a: [bool; 16]) -> [bool; 16] {
     add16(a, const_value::ONE)
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use test_util::*;
+
+    #[test]
+    fn half_adder_test() {
+        assert_eq!([false, false], half_adder(false, false));
+        assert_eq!([false, true], half_adder(false, true));
+        assert_eq!([false, true], half_adder(true, false));
+        assert_eq!([true, false], half_adder(true, true));
+    }
+
+    #[test]
+    fn full_adder_test() {
+        assert_eq!([false, false], full_adder(false, false, false));
+        assert_eq!([false, true], full_adder(false, false, true));
+        assert_eq!([false, true], full_adder(false, true, false));
+        assert_eq!([true, false], full_adder(false, true, true));
+        assert_eq!([false, true], full_adder(true, false, false));
+        assert_eq!([true, false], full_adder(true, false, true));
+        assert_eq!([true, false], full_adder(true, true, false));
+        assert_eq!([true, true], full_adder(true, true, true));
+    }
+
+    #[test]
+    fn add16_test() {
+        for i in -100..100 {
+            for j in -100..100 {
+                assert_eq!(
+                    i + j,
+                    bool_array_to_i16(add16(i16_to_bool_array(i), i16_to_bool_array(j)))
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn inc16_test() {
+        for i in -100..100 {
+            assert_eq!(i + 1, bool_array_to_i16(inc16(i16_to_bool_array(i))));
+        }
+    }
 }

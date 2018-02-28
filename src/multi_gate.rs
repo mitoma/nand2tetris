@@ -171,20 +171,6 @@ pub fn mux8way16(
     ]
 }
 
-/// dmux4way gate
-///
-/// ```
-/// use nand2tetlis::multi_gate::*;
-///
-/// assert_eq!(true, mux4(true, false, false, false, [false, false]));
-/// assert_eq!(false, mux4(false, false, false, false, [false, false]));
-/// assert_eq!(true, mux4(false, true, false, false, [false, true]));
-/// assert_eq!(false, mux4(false, false, false, false, [false, true]));
-/// assert_eq!(true, mux4(false, false, true, false, [true, false]));
-/// assert_eq!(false, mux4(false, false, false, false, [true, false]));
-/// assert_eq!(true, mux4(false, false, false, true, [true, true]));
-/// assert_eq!(false, mux4(true, false, false, false, [true, true]));
-/// ```
 pub fn dmux4way(a: bool, sel: [bool; 2]) -> [bool; 4] {
     [
         and(and(a, not(sel[0])), not(sel[1])),
@@ -194,20 +180,6 @@ pub fn dmux4way(a: bool, sel: [bool; 2]) -> [bool; 4] {
     ]
 }
 
-/// dmux8way gate
-///
-/// ```
-/// use nand2tetlis::multi_gate::*;
-///
-/// assert_eq!([true, false, false, false, false, false, false, false], dmux8way(true, [false, false, false]));
-/// assert_eq!([false, true, false, false, false, false, false, false], dmux8way(true, [false, false, true]));
-/// assert_eq!([false, false, true, false, false, false, false, false], dmux8way(true, [false, true, false]));
-/// assert_eq!([false, false, false, true, false, false, false, false], dmux8way(true, [false, true, true]));
-/// assert_eq!([false, false, false, false, true, false, false, false], dmux8way(true, [true, false, false]));
-/// assert_eq!([false, false, false, false, false, true, false, false], dmux8way(true, [true, false, true]));
-/// assert_eq!([false, false, false, false, false, false, true, false], dmux8way(true, [true, true, false]));
-/// assert_eq!([false, false, false, false, false, false, false, true], dmux8way(true, [true, true, true]));
-/// ```
 pub fn dmux8way(a: bool, sel: [bool; 3]) -> [bool; 8] {
     [
         and(and(and(a, not(sel[0])), not(sel[1])), not(sel[2])),
@@ -219,4 +191,57 @@ pub fn dmux8way(a: bool, sel: [bool; 3]) -> [bool; 8] {
         and(and(and(a, sel[0]), sel[1]), not(sel[2])),
         and(and(and(a, sel[0]), sel[1]), sel[2]),
     ]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dmux4way_test() {
+        assert_eq!(true, mux4(true, false, false, false, [false, false]));
+        assert_eq!(false, mux4(false, false, false, false, [false, false]));
+        assert_eq!(true, mux4(false, true, false, false, [false, true]));
+        assert_eq!(false, mux4(false, false, false, false, [false, true]));
+        assert_eq!(true, mux4(false, false, true, false, [true, false]));
+        assert_eq!(false, mux4(false, false, false, false, [true, false]));
+        assert_eq!(true, mux4(false, false, false, true, [true, true]));
+        assert_eq!(false, mux4(true, false, false, false, [true, true]));
+    }
+
+    #[test]
+    fn dmux8way_test() {
+        assert_eq!(
+            [true, false, false, false, false, false, false, false],
+            dmux8way(true, [false, false, false])
+        );
+        assert_eq!(
+            [false, true, false, false, false, false, false, false],
+            dmux8way(true, [false, false, true])
+        );
+        assert_eq!(
+            [false, false, true, false, false, false, false, false],
+            dmux8way(true, [false, true, false])
+        );
+        assert_eq!(
+            [false, false, false, true, false, false, false, false],
+            dmux8way(true, [false, true, true])
+        );
+        assert_eq!(
+            [false, false, false, false, true, false, false, false],
+            dmux8way(true, [true, false, false])
+        );
+        assert_eq!(
+            [false, false, false, false, false, true, false, false],
+            dmux8way(true, [true, false, true])
+        );
+        assert_eq!(
+            [false, false, false, false, false, false, true, false],
+            dmux8way(true, [true, true, false])
+        );
+        assert_eq!(
+            [false, false, false, false, false, false, false, true],
+            dmux8way(true, [true, true, true])
+        );
+    }
 }

@@ -1,45 +1,3 @@
-//! util for test.
-//!
-//! # Example
-//! ```
-//! //use nand2tetlis::test_util::*;
-//! 
-//! //for i in i16::min_value()..i16::max_value() {
-//! //    assert_eq!(bool_array_to_i16(i16_to_bool_array(i)), i);
-//! //}
-//! ```
-
-/// i16_to_bool_array
-///
-/// # Example
-/// ```
-/// use nand2tetlis::test_util::*;
-///
-/// assert_eq!([
-///   true, true, false, false, false, false, false, false,
-///   false, false, false, false, false, false,  false, false,
-/// ], i16_to_bool_array(3));
-/// assert_eq!([
-///   false, false, false, false, false, false, false, false,
-///   false, false, false, false, false, false,  false, false,
-/// ], i16_to_bool_array(0));
-/// assert_eq!([
-///   true, true, true, true, true, true, true, true, 
-///   true, true, true, true, true, true, true, true, 
-/// ], i16_to_bool_array(-1));
-/// assert_eq!([
-///   false, true, true, true, true, true, true, true, 
-///   true, true, true, true, true, true, true, true, 
-/// ], i16_to_bool_array(-2));
-/// assert_eq!([
-///   false, false, false, false, false, false, false, false,
-///   false, false, false, false, false, false,  false, true,
-/// ], i16_to_bool_array(i16::min_value()));
-/// assert_eq!([
-///   true, true, true, true, true, true, true, true,
-///   true, true, true, true, true, true, true, false,
-/// ], i16_to_bool_array(i16::max_value()));
-/// ```
 pub fn i16_to_bool_array(a: i16) -> [bool; 16] {
     [
         (a & (1 << 0)) != 0,
@@ -65,31 +23,6 @@ pub fn i2b(a: i16) -> [bool; 16] {
     i16_to_bool_array(a)
 }
 
-/// # Example
-/// ```
-/// use nand2tetlis::test_util::*;
-/// 
-/// assert_eq!(0, 
-/// bool_array_to_i16([
-///   false, false, false, false, false, false, false, false,
-///   false, false, false, false, false, false,  false, false,
-/// ]));
-/// assert_eq!(1, 
-/// bool_array_to_i16([
-///   true, false, false, false, false, false, false, false,
-///   false, false, false, false, false, false,  false, false,
-/// ]));
-/// assert_eq!(-1, 
-/// bool_array_to_i16([
-///   true, true, true, true, true, true, true, true, 
-///   true, true, true, true, true, true, true, true, 
-/// ]));
-/// assert_eq!(-2, 
-/// bool_array_to_i16([
-///   false, true, true, true, true, true, true, true, 
-///   true, true, true, true, true, true, true, true, 
-/// ]));
-/// ```
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn bool_array_to_i16(a: [bool; 16]) -> i16 {
       (if a[0]  { 1 << 0  } else { 0 })
@@ -112,4 +45,87 @@ pub fn bool_array_to_i16(a: [bool; 16]) -> i16 {
 
 pub fn b2i(a: [bool; 16]) -> i16 {
     bool_array_to_i16(a)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn i16_to_bool_array_test() {
+        assert_eq!(
+            [
+                true, true, false, false, false, false, false, false, false, false, false, false,
+                false, false, false, false,
+            ],
+            i16_to_bool_array(3)
+        );
+        assert_eq!(
+            [
+                false, false, false, false, false, false, false, false, false, false, false, false,
+                false, false, false, false,
+            ],
+            i16_to_bool_array(0)
+        );
+        assert_eq!(
+            [
+                true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+                true, true,
+            ],
+            i16_to_bool_array(-1)
+        );
+        assert_eq!(
+            [
+                false, true, true, true, true, true, true, true, true, true, true, true, true,
+                true, true, true,
+            ],
+            i16_to_bool_array(-2)
+        );
+        assert_eq!(
+            [
+                false, false, false, false, false, false, false, false, false, false, false, false,
+                false, false, false, true,
+            ],
+            i16_to_bool_array(i16::min_value())
+        );
+        assert_eq!(
+            [
+                true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+                true, false,
+            ],
+            i16_to_bool_array(i16::max_value())
+        );
+    }
+
+    #[test]
+    fn bool_array_to_i16_test() {
+        assert_eq!(
+            0,
+            bool_array_to_i16([
+                false, false, false, false, false, false, false, false, false, false, false, false,
+                false, false, false, false,
+            ])
+        );
+        assert_eq!(
+            1,
+            bool_array_to_i16([
+                true, false, false, false, false, false, false, false, false, false, false, false,
+                false, false, false, false,
+            ])
+        );
+        assert_eq!(
+            -1,
+            bool_array_to_i16([
+                true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+                true, true,
+            ])
+        );
+        assert_eq!(
+            -2,
+            bool_array_to_i16([
+                false, true, true, true, true, true, true, true, true, true, true, true, true,
+                true, true, true,
+            ])
+        );
+    }
 }
