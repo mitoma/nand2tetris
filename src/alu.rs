@@ -6,7 +6,7 @@ use multi_gate::*;
 /// 
 /// return (calcd_bit_array, is_negative, is_zero)
 /// 
-/// # Example
+/// # Examples
 /// ```
 /// use nand2tetlis::test_util::*;
 /// use nand2tetlis::alu::*;
@@ -27,6 +27,16 @@ use multi_gate::*;
 ///   alu(i2b(0b0000_0000_0000_0011i16),
 ///       i2b(0b0000_0000_0000_0001i16),
 ///   false, false, false, false, true, true));
+/// assert_eq!(
+///   (i2b(0b1010_1010_1010_1010_1010i16), true, false),
+///   alu(i2b(0b0101_0101_0101_0101_0101i16),
+///       i2b(0b1010_1010_1010_1010_1010i16),
+///   false, true, false, false, true, false));
+/// assert_eq!(
+///   (i2b(0b0101_0101_0101_0101_0101i16), false, false),
+///   alu(i2b(0b0101_0101_0101_0101_0101i16),
+///       i2b(0b1010_1010_1010_1010_1010i16),
+///   false, false, false, true, true, false));
 /// ```
 pub fn alu(
     x: [bool; 16],
