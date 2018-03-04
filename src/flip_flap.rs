@@ -14,7 +14,7 @@ impl Dff {
     pub fn dff(&mut self, a: bool) -> bool {
         let result = self.pre_value;
         self.pre_value = a;
-        return result;
+        result
     }
 }
 
@@ -31,7 +31,7 @@ impl Bit {
 
     pub fn bit(&mut self, a: bool, load: bool) -> bool {
         let v = mux(self.dff.pre_value, a, load);
-        return self.dff.dff(v);
+        self.dff.dff(v)
     }
 }
 
@@ -64,7 +64,7 @@ impl Register {
     }
 
     pub fn register(&mut self, a: [bool; 16], load: bool) -> [bool; 16] {
-        return [
+        [
             self.bits[0].bit(a[0], load),
             self.bits[1].bit(a[1], load),
             self.bits[2].bit(a[2], load),
@@ -81,7 +81,7 @@ impl Register {
             self.bits[13].bit(a[13], load),
             self.bits[14].bit(a[14], load),
             self.bits[15].bit(a[15], load),
-        ];
+        ]
     }
 }
 

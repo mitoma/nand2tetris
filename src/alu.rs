@@ -37,7 +37,7 @@ pub fn alu(
     );
 
     let ng_result = not16(result);
-    return (
+    (
         result,
         result[15],
         and(
@@ -62,7 +62,7 @@ pub fn alu(
                 ),
             ),
         ),
-    );
+    )
 }
 
 #[cfg(test)]
