@@ -37,6 +37,86 @@ impl Ram8 {
     }
 }
 
+pub struct Ram64 {
+    rams: [Ram8; 8],
+}
+
+impl Ram64 {
+    pub fn new() -> Ram64 {
+        Ram64 {
+            rams: [
+                Ram8::new(),
+                Ram8::new(),
+                Ram8::new(),
+                Ram8::new(),
+                Ram8::new(),
+                Ram8::new(),
+                Ram8::new(),
+                Ram8::new(),
+            ],
+        }
+    }
+
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 6], load: bool) -> [bool; 16] {
+        let upper = [address[0], address[1], address[2]];
+        let lower = [address[3], address[4], address[5]];
+
+        let sel = dmux8way(load, upper);
+        mux8way16(
+            self.rams[0].ram(a, lower, sel[0]),
+            self.rams[1].ram(a, lower, sel[1]),
+            self.rams[2].ram(a, lower, sel[2]),
+            self.rams[3].ram(a, lower, sel[3]),
+            self.rams[4].ram(a, lower, sel[4]),
+            self.rams[5].ram(a, lower, sel[5]),
+            self.rams[6].ram(a, lower, sel[6]),
+            self.rams[7].ram(a, lower, sel[7]),
+            upper,
+        )
+    }
+}
+
+pub struct Ram512 {
+    rams: [Ram64; 8],
+}
+
+impl Ram512 {
+    pub fn new() -> Ram512 {
+        Ram512 {
+            rams: [
+                Ram64::new(),
+                Ram64::new(),
+                Ram64::new(),
+                Ram64::new(),
+                Ram64::new(),
+                Ram64::new(),
+                Ram64::new(),
+                Ram64::new(),
+            ],
+        }
+    }
+
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 9], load: bool) -> [bool; 16] {
+        let upper = [address[0], address[1], address[2]];
+        let lower = [
+            address[3], address[4], address[5], address[6], address[7], address[8]
+        ];
+
+        let sel = dmux8way(load, upper);
+        mux8way16(
+            self.rams[0].ram(a, lower, sel[0]),
+            self.rams[1].ram(a, lower, sel[1]),
+            self.rams[2].ram(a, lower, sel[2]),
+            self.rams[3].ram(a, lower, sel[3]),
+            self.rams[4].ram(a, lower, sel[4]),
+            self.rams[5].ram(a, lower, sel[5]),
+            self.rams[6].ram(a, lower, sel[6]),
+            self.rams[7].ram(a, lower, sel[7]),
+            upper,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
