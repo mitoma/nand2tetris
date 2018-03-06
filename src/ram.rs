@@ -117,6 +117,94 @@ impl Ram512 {
     }
 }
 
+pub struct Ram4k {
+    rams: [Ram512; 8],
+}
+
+impl Ram4k {
+    pub fn new() -> Ram4k {
+        Ram4k {
+            rams: [
+                Ram512::new(),
+                Ram512::new(),
+                Ram512::new(),
+                Ram512::new(),
+                Ram512::new(),
+                Ram512::new(),
+                Ram512::new(),
+                Ram512::new(),
+            ],
+        }
+    }
+
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 12], load: bool) -> [bool; 16] {
+        let upper = [address[0], address[1], address[2]];
+        let lower = [
+            address[3],
+            address[4],
+            address[5],
+            address[6],
+            address[7],
+            address[8],
+            address[9],
+            address[10],
+            address[11],
+        ];
+
+        let sel = dmux8way(load, upper);
+        mux8way16(
+            self.rams[0].ram(a, lower, sel[0]),
+            self.rams[1].ram(a, lower, sel[1]),
+            self.rams[2].ram(a, lower, sel[2]),
+            self.rams[3].ram(a, lower, sel[3]),
+            self.rams[4].ram(a, lower, sel[4]),
+            self.rams[5].ram(a, lower, sel[5]),
+            self.rams[6].ram(a, lower, sel[6]),
+            self.rams[7].ram(a, lower, sel[7]),
+            upper,
+        )
+    }
+}
+
+pub struct Ram16k {
+    rams: [Ram4k; 4],
+}
+
+impl Ram16k {
+    pub fn new() -> Ram16k {
+        Ram16k {
+            rams: [Ram4k::new(), Ram4k::new(), Ram4k::new(), Ram4k::new()],
+        }
+    }
+
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 14], load: bool) -> [bool; 16] {
+        let upper = [address[0], address[1]];
+        let lower = [
+            address[2],
+            address[3],
+            address[4],
+            address[5],
+            address[6],
+            address[7],
+            address[8],
+            address[9],
+            address[10],
+            address[11],
+            address[12],
+            address[13],
+        ];
+
+        let sel = dmux4way(load, upper);
+        mux4way16(
+            self.rams[0].ram(a, lower, sel[0]),
+            self.rams[1].ram(a, lower, sel[1]),
+            self.rams[2].ram(a, lower, sel[2]),
+            self.rams[3].ram(a, lower, sel[3]),
+            upper,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
