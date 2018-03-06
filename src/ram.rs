@@ -226,4 +226,23 @@ mod tests {
             assert_eq!(ZERO, sut.ram(ZERO, address, false));
         }
     }
+
+    #[test]
+    fn test_ram16k() {
+        let mut sut = Ram16k::new();
+
+        for i in 0_i16..128_i16 {
+            let t = i2b(i);
+            let address = [
+                t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9], t[10], t[11], t[12],
+                t[13],
+            ];
+            assert_eq!(ZERO, sut.ram(FULL, address, false));
+            assert_eq!(ZERO, sut.ram(FULL, address, true));
+            assert_eq!(FULL, sut.ram(ZERO, address, false));
+            assert_eq!(FULL, sut.ram(ZERO, address, false));
+            assert_eq!(FULL, sut.ram(ZERO, address, true));
+            assert_eq!(ZERO, sut.ram(ZERO, address, false));
+        }
+    }
 }
