@@ -21,9 +21,8 @@ impl Ram8 {
         }
     }
 
-    pub fn ram(&mut self, a: [bool; 16], address: [bool; 16], load: bool) -> [bool; 16] {
-        let dmux_sel = [address[0], address[1], address[2]];
-        let sel = dmux8way(load, dmux_sel);
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 3], load: bool) -> [bool; 16] {
+        let sel = dmux8way(load, address);
         mux8way16(
             self.registers[0].register(a, sel[0]),
             self.registers[1].register(a, sel[1]),
@@ -33,7 +32,30 @@ impl Ram8 {
             self.registers[5].register(a, sel[5]),
             self.registers[6].register(a, sel[6]),
             self.registers[7].register(a, sel[7]),
-            dmux_sel,
+            address,
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use const_value::*;
+    use test_util::*;
+
+    #[test]
+    fn test_ram8() {
+        let mut sut = Ram8::new();
+
+        for i in 0_i16..7_i16 {
+            let t = i2b(i);
+            let address = [t[0], t[1], t[2]];
+            assert_eq!(ZERO, sut.ram(FULL, address, false));
+            assert_eq!(ZERO, sut.ram(FULL, address, true));
+            assert_eq!(FULL, sut.ram(ZERO, address, false));
+            assert_eq!(FULL, sut.ram(ZERO, address, false));
+            assert_eq!(FULL, sut.ram(ZERO, address, true));
+            assert_eq!(ZERO, sut.ram(ZERO, address, false));
+        }
     }
 }
