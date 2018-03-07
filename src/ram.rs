@@ -228,6 +228,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_ram16k() {
         let mut sut = Ram16k::new();
 
