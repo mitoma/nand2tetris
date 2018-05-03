@@ -2,7 +2,7 @@ use flip_flap::*;
 use multi_gate::*;
 
 pub struct Ram8 {
-    registers: [Register; 8],
+    pub registers: [Register; 8],
 }
 
 impl Ram8 {
@@ -38,7 +38,7 @@ impl Ram8 {
 }
 
 pub struct Ram64 {
-    rams: [Ram8; 8],
+    pub rams: [Ram8; 8],
 }
 
 impl Ram64 {
@@ -77,7 +77,7 @@ impl Ram64 {
 }
 
 pub struct Ram512 {
-    rams: [Ram64; 8],
+    pub rams: [Ram64; 8],
 }
 
 impl Ram512 {
@@ -118,7 +118,7 @@ impl Ram512 {
 }
 
 pub struct Ram4k {
-    rams: [Ram512; 8],
+    pub rams: [Ram512; 8],
 }
 
 impl Ram4k {
