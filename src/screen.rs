@@ -2,7 +2,6 @@ extern crate piston;
 extern crate piston_window;
 
 use piston_window::*;
-//use piston::event::*;
 use piston::window::WindowSettings;
 
 struct Screen {
