@@ -58,10 +58,13 @@ fn main() {
                 .texture
                 .update(&mut screen.window.encoder, &screen.canvas)
                 .unwrap();
+                /*
             screen.window.draw_2d(&e, |c, g| {
+                let mut screen = screen;
                 clear([1.0; 4], g);
                 image(&screen.texture, c.transform, g);
             });
+            */
         }
 
         // http://docs.piston.rs/mush/piston/input/keyboard/enum.Key.html
