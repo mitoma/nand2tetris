@@ -1,4 +1,3 @@
-use basic_gate::*;
 use multi_gate::*;
 use const_value::*;
 use adder::*;
