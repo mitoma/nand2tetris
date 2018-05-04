@@ -4,8 +4,8 @@ version = "0.1.0"
 authors = ["mitoma <mutetheradio@gmail.com>"]
 
 [[bin]]
-name = "screen_ram"
-path = "src/screen.rs"
+name = "screen_runner"
+path = "src/screen_runner.rs"
 
 [dependencies]
 piston = "0.36.0"
