@@ -2,6 +2,7 @@ extern crate piston;
 extern crate piston_window;
 
 use piston_window::*;
+//use piston::event::*;
 use piston::window::WindowSettings;
 
 struct Screen {
@@ -18,21 +19,22 @@ impl Screen {
 
         Screen { window: window }
     }
-}
 
-fn main() {
-    let mut screen = Screen::new();
-
-    while let Some(e) = screen.window.next() {
-        screen.window.draw_2d(&e, |c, g| {
+    fn draw(&mut self, e: &Event) {
+        self.window.draw_2d(e, |c, g| {
+            // clear window
             clear([0.0, 0.0, 0.0, 1.0], g);
+            //
             rectangle(
-                [1.0, 0.0, 0.0, 1.0],     // red
-                [0.0, 0.0, 100.0, 100.0], // rectangle
+                [1.0, 0.0, 0.0, 1.0],     // color
+                [0.0, 0.0, 100.0, 100.0], // dot
                 c.transform,
                 g,
             );
         });
+    }
+
+    fn key(&mut self, e: &Event) {
         // http://docs.piston.rs/mush/piston/input/keyboard/enum.Key.html
         if let Some(key) = e.press_args() {
             match key {
@@ -41,5 +43,13 @@ fn main() {
                 _ => println!("Pressed keyboard key NONE"),
             }
         }
+    }
+}
+
+fn main() {
+    let mut screen = Screen::new();
+    while let Some(e) = screen.window.next() {
+        screen.draw(&e);
+        screen.key(&e);
     }
 }
