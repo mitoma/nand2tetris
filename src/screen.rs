@@ -1,7 +1,3 @@
-extern crate glutin_window;
-extern crate graphics;
-extern crate image;
-extern crate opengl_graphics;
 extern crate piston;
 extern crate piston_window;
 
