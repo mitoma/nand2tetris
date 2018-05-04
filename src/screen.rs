@@ -1,19 +1,25 @@
 use piston::window::WindowSettings;
 use piston_window::*;
 
+use ram::*;
+
 pub struct Screen {
+    pub ram: Ram16k,
     pub window: PistonWindow,
 }
 
 impl Screen {
-    pub fn new() -> Screen {
+    pub fn new(ram: Ram16k) -> Screen {
         // Create an Glutin window.
         let window: PistonWindow = WindowSettings::new("hack screen", [512, 256])
             .exit_on_esc(true)
             .build()
             .unwrap();
 
-        Screen { window: window }
+        Screen {
+            ram: ram,
+            window: window,
+        }
     }
 
     pub fn draw(&mut self, e: &Event) {
