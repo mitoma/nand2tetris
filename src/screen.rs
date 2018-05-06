@@ -1,5 +1,6 @@
 use piston::window::WindowSettings;
 use piston_window::*;
+use image::*;
 
 use ram::*;
 
@@ -23,40 +24,41 @@ impl Screen {
     }
 
     pub fn draw(&mut self, e: &Event) {
-        let ram = &self.ram;
-        self.window.draw_2d(e, |c, g| {
-            // clear window
-            clear([0.0, 0.0, 0.0, 1.0], g);
+        let ram = &mut self.ram;
 
-            // draw memory
-            let mut counter: u32 = 0;
-            for rams4k in ram.rams[0..1].iter() {
-                for rams512 in rams4k.rams.iter() {
-                    for ram64 in rams512.rams.iter() {
-                        for ram8 in ram64.rams.iter() {
-                            for register in ram8.registers.iter() {
-                                for bit in register.bits.iter() {
-                                    let color = if bit.dff.pre_value {
-                                        [1.0, 1.0, 1.0, 1.0]
+        let mut canvas = ImageBuffer::new(512, 256);
+        // draw memory
+        let mut counter: u32 = 0;
+        for rams4k in ram.rams[0..2].iter() {
+            for rams512 in rams4k.rams.iter() {
+                for ram64 in rams512.rams.iter() {
+                    for ram8 in ram64.rams.iter() {
+                        for register in ram8.registers.iter() {
+                            for bit in register.bits.iter() {
+                                let color = if bit.dff.pre_value {
+                                    [255, 255, 255, 255]
+                                } else {
+                                    if counter % 2 == 1 {
+                                        [255, 255, 255, 255]
                                     } else {
-                                        [0.0, 0.0, 0.0, 1.0]
-                                    };
-                                    let x = counter % 512;
-                                    let y = counter / 512;
-                                    rectangle(
-                                        color,                                                    // color
-                                        [x as f64, y as f64, (x as f64 + 1.0), (y as f64 + 1.0)], // dot
-                                        c.transform,
-                                        g,
-                                    );
-                                    counter += 1;
-                                }
+                                        [0, 0, 0, 255]
+                                    }
+                                };
+                                let x = counter % 512;
+                                let y = counter / 512;
+                                canvas.put_pixel(x, y, Rgba(color));
+                                counter += 1;
                             }
                         }
                     }
                 }
-                println!("{}", counter);
             }
+        }
+        let texture: G2dTexture =
+            Texture::from_image(&mut self.window.factory, &canvas, &TextureSettings::new())
+                .unwrap();
+        self.window.draw_2d(e, |c, g| {
+            image(&texture, c.transform, g);
         });
     }
 

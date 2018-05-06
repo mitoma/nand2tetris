@@ -1,5 +1,6 @@
 extern crate piston;
 extern crate piston_window;
+extern crate image;
 
 pub mod basic_gate;
 pub mod multi_gate;
