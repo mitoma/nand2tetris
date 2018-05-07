@@ -3,6 +3,7 @@ use piston_window::*;
 use image::*;
 
 use ram::*;
+use test_util::*;
 
 pub struct Screen {
     pub ram: Ram16k,
@@ -36,13 +37,9 @@ impl Screen {
                         for register in ram8.registers.iter() {
                             for bit in register.bits.iter() {
                                 let color = if bit.dff.pre_value {
-                                    [255, 255, 255, 255]
+                                    [0, 255, 0, 255]
                                 } else {
-                                    if counter % 2 == 1 {
-                                        [255, 255, 255, 255]
-                                    } else {
-                                        [0, 0, 0, 255]
-                                    }
+                                    [0, 0, 0, 255]
                                 };
                                 let x = counter % 512;
                                 let y = counter / 512;
@@ -65,11 +62,52 @@ impl Screen {
     pub fn key(&mut self, e: &Event) {
         // http://docs.piston.rs/mush/piston/input/keyboard/enum.Key.html
         if let Some(key) = e.press_args() {
-            match key {
-                Button::Keyboard(keyboard::Key::Up) => println!("Pressed keyboard key UP"),
-                Button::Keyboard(keyboard::Key::Down) => println!("Pressed keyboard key UP"),
-                _ => println!("Pressed keyboard key NONE"),
-            }
+            let key_bits = i2b(self.key_to_code(key));
+            println!("keycoard {}", self.key_to_code(key));
+
+            let ram = &mut self.ram;
+            ram.ram(
+                key_bits,
+                [
+                    false, false, false, false, false, true, false, false, false, false, false,
+                    false, false, false,
+                ],
+                true,
+            );
+        }
+    }
+
+    fn key_to_code(&mut self, key: Button) -> i16 {
+        println!("to : {:?}", key);
+        match key {
+            Button::Keyboard(keyboard::Key::Space) => 32,
+
+            Button::Keyboard(keyboard::Key::Return) => 128,
+            Button::Keyboard(keyboard::Key::Backspace) => 129,
+            Button::Keyboard(keyboard::Key::Left) => 130,
+            Button::Keyboard(keyboard::Key::Up) => 131,
+            Button::Keyboard(keyboard::Key::Right) => 132,
+            Button::Keyboard(keyboard::Key::Down) => 133,
+            Button::Keyboard(keyboard::Key::Home) => 134,
+            Button::Keyboard(keyboard::Key::End) => 135,
+            Button::Keyboard(keyboard::Key::PageUp) => 136,
+            Button::Keyboard(keyboard::Key::PageDown) => 137,
+            Button::Keyboard(keyboard::Key::Insert) => 138,
+            Button::Keyboard(keyboard::Key::Delete) => 139,
+            Button::Keyboard(keyboard::Key::Escape) => 140,
+            Button::Keyboard(keyboard::Key::F1) => 141,
+            Button::Keyboard(keyboard::Key::F2) => 142,
+            Button::Keyboard(keyboard::Key::F3) => 143,
+            Button::Keyboard(keyboard::Key::F4) => 144,
+            Button::Keyboard(keyboard::Key::F5) => 145,
+            Button::Keyboard(keyboard::Key::F6) => 146,
+            Button::Keyboard(keyboard::Key::F7) => 147,
+            Button::Keyboard(keyboard::Key::F8) => 148,
+            Button::Keyboard(keyboard::Key::F9) => 149,
+            Button::Keyboard(keyboard::Key::F10) => 150,
+            Button::Keyboard(keyboard::Key::F11) => 151,
+            Button::Keyboard(keyboard::Key::F12) => 152,
+            _ => 0,
         }
     }
 }
