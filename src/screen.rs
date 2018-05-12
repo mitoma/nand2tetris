@@ -9,6 +9,7 @@ pub struct Screen {
     pub ram: Ram16k,
     pub window: PistonWindow,
     on_shift: bool,
+    current_keycode: i16,
 }
 
 impl Screen {
@@ -23,11 +24,12 @@ impl Screen {
             ram: ram,
             window: window,
             on_shift: false,
+            current_keycode: 0,
         }
     }
 
     pub fn draw(&mut self, e: &Event) {
-        if let Some(_) = e.update_args() {
+        if let Some(_) = e.render_args() {
             let ram = &mut self.ram;
             let mut canvas = ImageBuffer::new(512, 256);
             // draw memory
@@ -67,24 +69,28 @@ impl Screen {
         if let Some(key) = e.press_args() {
             if self.is_shift(key) {
                 self.on_shift = false;
+            } else {
+                self.current_keycode = self.key_to_code(key);
             }
-            let key_bits = i2b(self.key_to_code(key));
-
-            let ram = &mut self.ram;
-            ram.ram(
-                key_bits,
-                [
-                    false, false, false, false, false, true, false, false, false, false, true,
-                    false, false, false,
-                ],
-                true,
-            );
         }
         if let Some(key) = e.release_args() {
             if self.is_shift(key) {
                 self.on_shift = false;
+            } else {
+                self.current_keycode = 0;
             }
         }
+
+        let key_bits = i2b(self.current_keycode);
+        let ram = &mut self.ram;
+        ram.ram(
+            key_bits,
+            [
+                false, false, false, false, false, true, false, false, false, false, true, false,
+                false, false,
+            ],
+            true,
+        );
     }
 
     fn is_shift(&mut self, key: Button) -> bool {
