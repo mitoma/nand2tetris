@@ -68,7 +68,7 @@ impl Screen {
         // http://docs.piston.rs/mush/piston/input/keyboard/enum.Key.html
         if let Some(key) = e.press_args() {
             if self.is_shift(key) {
-                self.on_shift = false;
+                self.on_shift = true;
             } else {
                 self.current_keycode = self.key_to_code(key);
             }
@@ -103,9 +103,51 @@ impl Screen {
     }
 
     fn key_to_code(&mut self, key: Button) -> i16 {
-        match key {
-            Button::Keyboard(keyboard::Key::Space) => 32,
+        let shift_value = if self.on_shift { 32 } else { 0 };
 
+        match key {
+            // num
+            Button::Keyboard(keyboard::Key::D0) => 48,
+            Button::Keyboard(keyboard::Key::D1) => 49,
+            Button::Keyboard(keyboard::Key::D2) => 50,
+            Button::Keyboard(keyboard::Key::D3) => 51,
+            Button::Keyboard(keyboard::Key::D4) => 52,
+            Button::Keyboard(keyboard::Key::D5) => 53,
+            Button::Keyboard(keyboard::Key::D6) => 54,
+            Button::Keyboard(keyboard::Key::D7) => 55,
+            Button::Keyboard(keyboard::Key::D8) => 56,
+            Button::Keyboard(keyboard::Key::D9) => 57,
+
+            // alpha
+            Button::Keyboard(keyboard::Key::A) => 65 + shift_value,
+            Button::Keyboard(keyboard::Key::B) => 66 + shift_value,
+            Button::Keyboard(keyboard::Key::C) => 67 + shift_value,
+            Button::Keyboard(keyboard::Key::D) => 68 + shift_value,
+            Button::Keyboard(keyboard::Key::E) => 69 + shift_value,
+            Button::Keyboard(keyboard::Key::F) => 70 + shift_value,
+            Button::Keyboard(keyboard::Key::G) => 71 + shift_value,
+            Button::Keyboard(keyboard::Key::H) => 72 + shift_value,
+            Button::Keyboard(keyboard::Key::I) => 73 + shift_value,
+            Button::Keyboard(keyboard::Key::J) => 74 + shift_value,
+            Button::Keyboard(keyboard::Key::K) => 75 + shift_value,
+            Button::Keyboard(keyboard::Key::L) => 76 + shift_value,
+            Button::Keyboard(keyboard::Key::M) => 77 + shift_value,
+            Button::Keyboard(keyboard::Key::N) => 78 + shift_value,
+            Button::Keyboard(keyboard::Key::O) => 79 + shift_value,
+            Button::Keyboard(keyboard::Key::P) => 80 + shift_value,
+            Button::Keyboard(keyboard::Key::Q) => 81 + shift_value,
+            Button::Keyboard(keyboard::Key::R) => 82 + shift_value,
+            Button::Keyboard(keyboard::Key::S) => 83 + shift_value,
+            Button::Keyboard(keyboard::Key::T) => 84 + shift_value,
+            Button::Keyboard(keyboard::Key::U) => 85 + shift_value,
+            Button::Keyboard(keyboard::Key::V) => 86 + shift_value,
+            Button::Keyboard(keyboard::Key::W) => 87 + shift_value,
+            Button::Keyboard(keyboard::Key::X) => 88 + shift_value,
+            Button::Keyboard(keyboard::Key::Y) => 89 + shift_value,
+            Button::Keyboard(keyboard::Key::Z) => 90 + shift_value,
+
+            // other key
+            Button::Keyboard(keyboard::Key::Space) => 32,
             Button::Keyboard(keyboard::Key::Return) => 128,
             Button::Keyboard(keyboard::Key::Backspace) => 129,
             Button::Keyboard(keyboard::Key::Left) => 130,
