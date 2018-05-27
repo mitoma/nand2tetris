@@ -44,8 +44,6 @@ impl Counter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use const_value::*;
-    use test_util::*;
 
     #[test]
     fn test_counter() {
