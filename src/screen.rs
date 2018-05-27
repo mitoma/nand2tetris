@@ -1,6 +1,6 @@
+use image::*;
 use piston::window::WindowSettings;
 use piston_window::*;
-use image::*;
 
 use ram::*;
 use test_util::*;
@@ -32,23 +32,26 @@ impl Screen {
         if let Some(_) = e.render_args() {
             let ram = &mut self.ram;
             let mut canvas = ImageBuffer::new(512, 256);
-            // draw memory
-            let mut counter: u32 = 0;
-            for rams4k in ram.rams[0..2].iter() {
-                for rams512 in rams4k.rams.iter() {
-                    for ram64 in rams512.rams.iter() {
-                        for ram8 in ram64.rams.iter() {
-                            for register in ram8.registers.iter() {
-                                for bit in register.bits.iter() {
-                                    let color = if bit.dff.pre_value {
-                                        [0, 255, 0, 255]
-                                    } else {
-                                        [0, 0, 0, 255]
-                                    };
-                                    let x = counter % 512;
-                                    let y = counter / 512;
-                                    canvas.put_pixel(x, y, Rgba(color));
-                                    counter += 1;
+            // draw screen
+            {
+                let mut counter: u32 = 0;
+                for rams4k in ram.rams[0..2].iter() {
+                    for rams512 in rams4k.rams.iter() {
+                        for ram64 in rams512.rams.iter() {
+                            for ram8 in ram64.rams.iter() {
+                                for register in ram8.registers.iter() {
+                                    for bit in register.bits.iter() {
+                                        let calval: u8 = ((counter % 4) as u8) * 50 as u8;
+                                        let color = if bit.dff.pre_value {
+                                            [0, 255, calval, 255]
+                                        } else {
+                                            [0, 0, calval, 255]
+                                        };
+                                        let x = counter % 512;
+                                        let y = counter / 512;
+                                        canvas.put_pixel(x, y, Rgba(color));
+                                        counter += 1;
+                                    }
                                 }
                             }
                         }
@@ -83,14 +86,14 @@ impl Screen {
 
         let key_bits = i2b(self.current_keycode);
         let ram = &mut self.ram;
-        ram.ram(
-            key_bits,
-            [
-                false, false, false, false, false, true, false, false, false, false, true, false,
-                false, false,
-            ],
-            true,
-        );
+
+        let mut write_position: [bool; 14] = [
+            false, false, false, false, false, false, false, false, false, false, false, false,
+            false, false,
+        ];
+        write_position[(self.current_keycode % 14) as usize] = true;
+
+        ram.ram(key_bits, write_position, true);
     }
 
     fn is_shift(&mut self, key: Button) -> bool {
