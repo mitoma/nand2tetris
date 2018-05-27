@@ -1,5 +1,6 @@
 use flip_flap::*;
 use multi_gate::*;
+use test_util::*;
 
 pub struct Ram8 {
     pub registers: [Register; 8],
@@ -99,7 +100,7 @@ impl Ram512 {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 9], load: bool) -> [bool; 16] {
         let upper = [address[0], address[1], address[2]];
         let lower = [
-            address[3], address[4], address[5], address[6], address[7], address[8]
+            address[3], address[4], address[5], address[6], address[7], address[8],
         ];
 
         let sel = dmux8way(load, upper);
@@ -166,6 +167,29 @@ impl Ram4k {
     }
 }
 
+// debug 用の native 実装
+pub struct Ram16kHiSpeed {
+    pub rams: [u16; 1024 * 16],
+}
+
+impl Ram16kHiSpeed {
+    pub fn new() -> Ram16kHiSpeed {
+        Ram16kHiSpeed {
+            rams: [0; 1024 * 16],
+        }
+    }
+
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 14], load: bool) -> [bool; 16] {
+        let address = b142u(address) as usize;
+        let result = u2b(self.rams[address]);
+        if load {
+            let a_u16 = b2u(a);
+            self.rams[address] = a_u16;
+        }
+        result
+    }
+}
+
 pub struct Ram16k {
     pub rams: [Ram4k; 4],
 }
@@ -209,7 +233,6 @@ impl Ram16k {
 mod tests {
     use super::*;
     use const_value::*;
-    use test_util::*;
 
     #[test]
     fn test_ram8() {
@@ -246,4 +269,24 @@ mod tests {
             assert_eq!(ZERO, sut.ram(ZERO, address, false));
         }
     }
+
+    #[test]
+    fn test_ram16k_hi_speed() {
+        let mut sut = Ram16kHiSpeed::new();
+
+        for i in 0_i16..128_i16 {
+            let t = i2b(i);
+            let address = [
+                t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9], t[10], t[11], t[12],
+                t[13],
+            ];
+            assert_eq!(ZERO, sut.ram(FULL, address, false));
+            assert_eq!(ZERO, sut.ram(FULL, address, true));
+            assert_eq!(FULL, sut.ram(ZERO, address, false));
+            assert_eq!(FULL, sut.ram(ZERO, address, false));
+            assert_eq!(FULL, sut.ram(ZERO, address, true));
+            assert_eq!(ZERO, sut.ram(ZERO, address, false));
+        }
+    }
+
 }

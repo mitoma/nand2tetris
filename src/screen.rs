@@ -6,14 +6,14 @@ use ram::*;
 use test_util::*;
 
 pub struct Screen {
-    pub ram: Ram16k,
+    pub ram: Ram16kHiSpeed,
     pub window: PistonWindow,
     on_shift: bool,
     current_keycode: i16,
 }
 
 impl Screen {
-    pub fn new(ram: Ram16k) -> Screen {
+    pub fn new(ram: Ram16kHiSpeed) -> Screen {
         // Create an Glutin window.
         let window: PistonWindow = WindowSettings::new("hack screen", [512, 256])
             .exit_on_esc(true)
@@ -32,7 +32,29 @@ impl Screen {
         if let Some(_) = e.render_args() {
             let ram = &mut self.ram;
             let mut canvas = ImageBuffer::new(512, 256);
-            // draw screen
+
+            // for debug
+            let mut counter: u32 = 0;
+            for i in 0..(1024 * 8) {
+                let value = ram.ram(u2b(0), u2b14(i), false);
+                for v in value.iter() {
+                    let zero_pos = if counter % 8 == 0 { 128 } else { 0 };
+                    let four_pos = if counter % 8 == 4 { 128 } else { 0 };
+
+                    let color = if *v {
+                        [zero_pos, 255, four_pos, 255]
+                    } else {
+                        [zero_pos, 0, four_pos, 255]
+                    };
+                    let x = counter % 512;
+                    let y = counter / 512;
+                    canvas.put_pixel(x, y, Rgba(color));
+                    counter += 1;
+                }
+            }
+
+            // for naive
+            /*
             {
                 let mut counter: u32 = 0;
                 for rams4k in ram.rams[0..2].iter() {
@@ -60,6 +82,7 @@ impl Screen {
                     }
                 }
             }
+            */
             let texture: G2dTexture =
                 Texture::from_image(&mut self.window.factory, &canvas, &TextureSettings::new())
                     .unwrap();
