@@ -23,6 +23,37 @@ pub fn i2b(a: i16) -> [bool; 16] {
     i16_to_bool_array(a)
 }
 
+pub fn u16_to_bool_array(a: u16) -> [bool; 16] {
+    [
+        (a & (1 << 0)) != 0,
+        (a & (1 << 1)) != 0,
+        (a & (1 << 2)) != 0,
+        (a & (1 << 3)) != 0,
+        (a & (1 << 4)) != 0,
+        (a & (1 << 5)) != 0,
+        (a & (1 << 6)) != 0,
+        (a & (1 << 7)) != 0,
+        (a & (1 << 8)) != 0,
+        (a & (1 << 9)) != 0,
+        (a & (1 << 10)) != 0,
+        (a & (1 << 11)) != 0,
+        (a & (1 << 12)) != 0,
+        (a & (1 << 13)) != 0,
+        (a & (1 << 14)) != 0,
+        (a & (1 << 15)) != 0,
+    ]
+}
+
+pub fn u2b(a: u16) -> [bool; 16] {
+    u16_to_bool_array(a)
+}
+
+pub fn u2b14(a: u16) -> [bool; 14] {
+    let mut target: [bool; 14] = [false; 14];
+    target.copy_from_slice(&u2b(a)[0..14]);
+    target
+}
+
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn bool_array_to_i16(a: [bool; 16]) -> i16 {
       (if a[0]  { 1 << 0  } else { 0 })
