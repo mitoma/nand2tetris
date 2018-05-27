@@ -41,11 +41,13 @@ impl Screen {
                             for ram8 in ram64.rams.iter() {
                                 for register in ram8.registers.iter() {
                                     for bit in register.bits.iter() {
-                                        let calval: u8 = ((counter % 4) as u8) * 50 as u8;
+                                        let zero_pos = if counter % 8 == 0 { 128 } else { 0 };
+                                        let four_pos = if counter % 8 == 4 { 128 } else { 0 };
+
                                         let color = if bit.dff.pre_value {
-                                            [0, 255, calval, 255]
+                                            [zero_pos, 255, four_pos, 255]
                                         } else {
-                                            [0, 0, calval, 255]
+                                            [zero_pos, 0, four_pos, 255]
                                         };
                                         let x = counter % 512;
                                         let y = counter / 512;
