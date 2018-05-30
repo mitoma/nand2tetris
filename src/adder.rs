@@ -66,11 +66,11 @@ mod tests {
 
     #[test]
     fn add16_test() {
-        for i in -100..100 {
-            for j in -100..100 {
+        for i in 0..100 {
+            for j in 0..100 {
                 assert_eq!(
                     i + j,
-                    bool_array_to_i16(add16(i16_to_bool_array(i), i16_to_bool_array(j)))
+                    bool_array_to_u16(add16(u16_to_bool_array(i), u16_to_bool_array(j)))
                 );
             }
         }
@@ -78,8 +78,8 @@ mod tests {
 
     #[test]
     fn inc16_test() {
-        for i in -100..100 {
-            assert_eq!(i + 1, bool_array_to_i16(inc16(i16_to_bool_array(i))));
+        for i in 0..100 {
+            assert_eq!(i + 1, bool_array_to_u16(inc16(u16_to_bool_array(i))));
         }
     }
 }

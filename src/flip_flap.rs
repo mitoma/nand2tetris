@@ -118,24 +118,24 @@ mod tests {
     fn test_register() {
         let mut register = Register::new();
         assert_eq!(
-            i2b(0b_0000_0000_0000_0000_i16),
-            register.register(i2b(0b_0000_0000_0000_0000_i16), false)
+            u2b(0b_0000_0000_0000_0000_u16),
+            register.register(u2b(0b_0000_0000_0000_0000_u16), false)
         );
         assert_eq!(
-            i2b(0b_0000_0000_0000_0000_i16),
-            register.register(i2b(0b_0101_0101_0101_0101_i16), true)
+            u2b(0b_0000_0000_0000_0000_u16),
+            register.register(u2b(0b_0101_0101_0101_0101_u16), true)
         ); // set mem
         assert_eq!(
-            i2b(0b_0101_0101_0101_0101_i16),
-            register.register(i2b(0b_0000_0000_0000_0000_i16), false)
+            u2b(0b_0101_0101_0101_0101_u16),
+            register.register(u2b(0b_0000_0000_0000_0000_u16), false)
         );
         assert_eq!(
-            i2b(0b_0101_0101_0101_0101_i16),
-            register.register(i2b(0b_0000_0000_0000_0000_i16), true)
+            u2b(0b_0101_0101_0101_0101_u16),
+            register.register(u2b(0b_0000_0000_0000_0000_u16), true)
         ); // set mem
         assert_eq!(
-            i2b(0b_0000_0000_0000_0000_i16),
-            register.register(i2b(0b_0000_0000_0000_0000_i16), false)
+            u2b(0b_0000_0000_0000_0000_u16),
+            register.register(u2b(0b_0000_0000_0000_0000_u16), false)
         );
     }
 

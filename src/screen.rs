@@ -1,19 +1,19 @@
+use image::*;
 use piston::window::WindowSettings;
 use piston_window::*;
-use image::*;
 
 use ram::*;
 use test_util::*;
 
 pub struct Screen {
-    pub ram: Ram16k,
+    pub ram: Ram16kHiSpeed,
     pub window: PistonWindow,
     on_shift: bool,
-    current_keycode: i16,
+    current_keycode: u16,
 }
 
 impl Screen {
-    pub fn new(ram: Ram16k) -> Screen {
+    pub fn new(ram: Ram16kHiSpeed) -> Screen {
         // Create an Glutin window.
         let window: PistonWindow = WindowSettings::new("hack screen", [512, 256])
             .exit_on_esc(true)
@@ -32,29 +32,57 @@ impl Screen {
         if let Some(_) = e.render_args() {
             let ram = &mut self.ram;
             let mut canvas = ImageBuffer::new(512, 256);
-            // draw memory
+
+            // for debug
             let mut counter: u32 = 0;
-            for rams4k in ram.rams[0..2].iter() {
-                for rams512 in rams4k.rams.iter() {
-                    for ram64 in rams512.rams.iter() {
-                        for ram8 in ram64.rams.iter() {
-                            for register in ram8.registers.iter() {
-                                for bit in register.bits.iter() {
-                                    let color = if bit.dff.pre_value {
-                                        [0, 255, 0, 255]
-                                    } else {
-                                        [0, 0, 0, 255]
-                                    };
-                                    let x = counter % 512;
-                                    let y = counter / 512;
-                                    canvas.put_pixel(x, y, Rgba(color));
-                                    counter += 1;
+            for i in 0..(1024 * 8) {
+                let value = ram.ram(u2b(0), u2b14(i), false);
+                for v in value.iter() {
+                    let zero_pos = if counter % 8 == 0 { 128 } else { 0 };
+                    let four_pos = if counter % 8 == 4 { 128 } else { 0 };
+
+                    let color = if *v {
+                        [zero_pos, 255, four_pos, 255]
+                    } else {
+                        [zero_pos, 0, four_pos, 255]
+                    };
+                    let x = counter % 512;
+                    let y = counter / 512;
+                    canvas.put_pixel(x, y, Rgba(color));
+                    counter += 1;
+                }
+            }
+
+            // for naive
+            /*
+            {
+                let mut counter: u32 = 0;
+                for rams4k in ram.rams[0..2].iter() {
+                    for rams512 in rams4k.rams.iter() {
+                        for ram64 in rams512.rams.iter() {
+                            for ram8 in ram64.rams.iter() {
+                                for register in ram8.registers.iter() {
+                                    for bit in register.bits.iter() {
+                                        let zero_pos = if counter % 8 == 0 { 128 } else { 0 };
+                                        let four_pos = if counter % 8 == 4 { 128 } else { 0 };
+
+                                        let color = if bit.dff.pre_value {
+                                            [zero_pos, 255, four_pos, 255]
+                                        } else {
+                                            [zero_pos, 0, four_pos, 255]
+                                        };
+                                        let x = counter % 512;
+                                        let y = counter / 512;
+                                        canvas.put_pixel(x, y, Rgba(color));
+                                        counter += 1;
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+            */
             let texture: G2dTexture =
                 Texture::from_image(&mut self.window.factory, &canvas, &TextureSettings::new())
                     .unwrap();
@@ -81,16 +109,16 @@ impl Screen {
             }
         }
 
-        let key_bits = i2b(self.current_keycode);
+        let key_bits = u2b(self.current_keycode);
         let ram = &mut self.ram;
-        ram.ram(
-            key_bits,
-            [
-                false, false, false, false, false, true, false, false, false, false, true, false,
-                false, false,
-            ],
-            true,
-        );
+
+        let mut write_position: [bool; 14] = [
+            false, false, false, false, false, false, false, false, false, false, false, false,
+            false, false,
+        ];
+        write_position[(self.current_keycode % 14) as usize] = true;
+
+        ram.ram(key_bits, write_position, true);
     }
 
     fn is_shift(&mut self, key: Button) -> bool {
@@ -102,7 +130,7 @@ impl Screen {
         }
     }
 
-    fn key_to_code(&mut self, key: Button) -> i16 {
+    fn key_to_code(&mut self, key: Button) -> u16 {
         let shift_value = if self.on_shift { 32 } else { 0 };
 
         match key {
