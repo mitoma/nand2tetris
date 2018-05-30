@@ -98,7 +98,7 @@ fn main() {
             //ram load
             /*
             for i in 0..64 {
-                let val = i2b(i);
+                let val = u2b(i);
                 let add = [
                     val[13], val[12], val[11], val[10], val[9], val[8], val[7], val[6], val[5],
                     val[4], val[3], val[2], val[1], val[0],

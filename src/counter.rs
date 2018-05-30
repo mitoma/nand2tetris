@@ -33,9 +33,9 @@ impl Counter {
 
         println!(
             "cur: {}, next: {}, calc:{}",
-            b2i(current_value),
-            b2i(next_value),
-            b2i(calced_value)
+            b2u(current_value),
+            b2u(next_value),
+            b2u(calced_value)
         );
         self.register.register(calced_value, true)
     }
@@ -48,22 +48,22 @@ mod tests {
     #[test]
     fn test_counter() {
         let mut sut = Counter::new();
-        let in_value = i2b(527);
+        let in_value = u2b(527);
 
-        sut.count(i2b(47), false, true, false);
+        sut.count(u2b(47), false, true, false);
 
-        assert_eq!(i2b(47), sut.count(in_value, false, false, false));
-        assert_eq!(i2b(47), sut.count(in_value, false, false, true));
-        assert_eq!(i2b(0), sut.count(in_value, false, false, false));
-        assert_eq!(i2b(0), sut.count(in_value, true, false, false));
-        assert_eq!(i2b(1), sut.count(in_value, true, false, false));
-        assert_eq!(i2b(2), sut.count(in_value, true, false, false));
-        assert_eq!(i2b(3), sut.count(in_value, true, false, false));
-        assert_eq!(i2b(4), sut.count(in_value, true, true, false));
-        assert_eq!(i2b(527), sut.count(in_value, true, false, false));
-        assert_eq!(i2b(528), sut.count(in_value, true, false, false));
-        assert_eq!(i2b(529), sut.count(in_value, true, false, false));
-        assert_eq!(i2b(530), sut.count(in_value, false, false, false));
-        assert_eq!(i2b(530), sut.count(in_value, false, false, false));
+        assert_eq!(u2b(47), sut.count(in_value, false, false, false));
+        assert_eq!(u2b(47), sut.count(in_value, false, false, true));
+        assert_eq!(u2b(0), sut.count(in_value, false, false, false));
+        assert_eq!(u2b(0), sut.count(in_value, true, false, false));
+        assert_eq!(u2b(1), sut.count(in_value, true, false, false));
+        assert_eq!(u2b(2), sut.count(in_value, true, false, false));
+        assert_eq!(u2b(3), sut.count(in_value, true, false, false));
+        assert_eq!(u2b(4), sut.count(in_value, true, true, false));
+        assert_eq!(u2b(527), sut.count(in_value, true, false, false));
+        assert_eq!(u2b(528), sut.count(in_value, true, false, false));
+        assert_eq!(u2b(529), sut.count(in_value, true, false, false));
+        assert_eq!(u2b(530), sut.count(in_value, false, false, false));
+        assert_eq!(u2b(530), sut.count(in_value, false, false, false));
     }
 }

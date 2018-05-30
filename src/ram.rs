@@ -238,8 +238,8 @@ mod tests {
     fn test_ram8() {
         let mut sut = Ram8::new();
 
-        for i in 0_i16..7_i16 {
-            let t = i2b(i);
+        for i in 0_u16..7_u16 {
+            let t = u2b(i);
             let address = [t[0], t[1], t[2]];
             assert_eq!(ZERO, sut.ram(FULL, address, false));
             assert_eq!(ZERO, sut.ram(FULL, address, true));
@@ -255,8 +255,8 @@ mod tests {
     fn test_ram16k() {
         let mut sut = Ram16k::new();
 
-        for i in 0_i16..128_i16 {
-            let t = i2b(i);
+        for i in 0_u16..128_u16 {
+            let t = u2b(i);
             let address = [
                 t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9], t[10], t[11], t[12],
                 t[13],
@@ -274,8 +274,8 @@ mod tests {
     fn test_ram16k_hi_speed() {
         let mut sut = Ram16kHiSpeed::new();
 
-        for i in 0_i16..128_i16 {
-            let t = i2b(i);
+        for i in 0_u16..128_u16 {
+            let t = u2b(i);
             let address = [
                 t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9], t[10], t[11], t[12],
                 t[13],

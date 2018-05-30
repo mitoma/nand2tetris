@@ -9,7 +9,7 @@ pub struct Screen {
     pub ram: Ram16kHiSpeed,
     pub window: PistonWindow,
     on_shift: bool,
-    current_keycode: i16,
+    current_keycode: u16,
 }
 
 impl Screen {
@@ -109,7 +109,7 @@ impl Screen {
             }
         }
 
-        let key_bits = i2b(self.current_keycode);
+        let key_bits = u2b(self.current_keycode);
         let ram = &mut self.ram;
 
         let mut write_position: [bool; 14] = [
@@ -130,7 +130,7 @@ impl Screen {
         }
     }
 
-    fn key_to_code(&mut self, key: Button) -> i16 {
+    fn key_to_code(&mut self, key: Button) -> u16 {
         let shift_value = if self.on_shift { 32 } else { 0 };
 
         match key {
