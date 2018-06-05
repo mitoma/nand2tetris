@@ -38,8 +38,8 @@ impl Screen {
             for i in 0..(1024 * 8) {
                 let value = ram.ram(u2b(0), u2b14(i), false);
                 for v in value.iter() {
-                    let zero_pos = if counter % 8 == 0 { 128 } else { 0 };
-                    let four_pos = if counter % 8 == 4 { 128 } else { 0 };
+                    let zero_pos = if counter % 8 == 0 { 64 } else { 0 };
+                    let four_pos = if counter % 8 == 4 { 64 } else { 0 };
 
                     let color = if *v {
                         [zero_pos, 255, four_pos, 255]
@@ -112,13 +112,10 @@ impl Screen {
         let key_bits = u2b(self.current_keycode);
         let ram = &mut self.ram;
 
-        let mut write_position: [bool; 14] = [
-            false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false,
-        ];
-        write_position[(self.current_keycode % 14) as usize] = true;
+        for i in 0..8 {
+          ram.ram(key_bits, u2b14(0b_0000_0001_0001_1111_u16 + (i << 5)), true);
+        }
 
-        ram.ram(key_bits, write_position, true);
     }
 
     fn is_shift(&mut self, key: Button) -> bool {
