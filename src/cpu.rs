@@ -1,5 +1,7 @@
+use basic_gate::*;
 use counter::*;
 use flip_flap::*;
+use multi_gate::*;
 
 pub struct Cpu {
     a_register: Register,
@@ -34,6 +36,9 @@ impl Cpu {
         ];
         let dest = [instruction[10], instruction[11], instruction[12]];
         let jump = [instruction[13], instruction[14], instruction[15]];
+
+        let a_register_store_value = mux16(instruction, [false; 16], is_c);
+        self.a_register.register(a_register_store_value, not(is_c));
 
         // A命令時のvalue。これはいらないかも
         let value = [
