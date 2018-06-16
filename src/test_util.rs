@@ -23,6 +23,12 @@ pub fn i2b(a: i16) -> [bool; 16] {
     i16_to_bool_array(a)
 }
 
+pub fn i2b15(a: i16) -> [bool; 15] {
+    let mut target: [bool; 15] = [false; 15];
+    target.copy_from_slice(&i2b(a)[0..15]);
+    target
+}
+
 pub fn u16_to_bool_array(a: u16) -> [bool; 16] {
     [
         (a & (1 << 0)) != 0,
