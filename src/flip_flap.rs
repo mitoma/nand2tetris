@@ -119,31 +119,6 @@ mod tests {
     #[test]
     fn test_register() {
         let mut register = Register::new();
-        assert_eq!(
-            u2b(0b_0000_0000_0000_0000_u16),
-            register.register(u2b(0b_0000_0000_0000_0000_u16), false)
-        );
-        assert_eq!(
-            u2b(0b_0000_0000_0000_0000_u16),
-            register.register(u2b(0b_0101_0101_0101_0101_u16), true)
-        ); // set mem
-        assert_eq!(
-            u2b(0b_0101_0101_0101_0101_u16),
-            register.register(u2b(0b_0000_0000_0000_0000_u16), false)
-        );
-        assert_eq!(
-            u2b(0b_0101_0101_0101_0101_u16),
-            register.register(u2b(0b_0000_0000_0000_0000_u16), true)
-        ); // set mem
-        assert_eq!(
-            u2b(0b_0000_0000_0000_0000_u16),
-            register.register(u2b(0b_0000_0000_0000_0000_u16), false)
-        );
-    }
-
-    #[test]
-    fn register_maji_test() {
-        let mut register = Register::new();
 
         let f = fs::File::open("test/Register.cmp").unwrap();
         let reader = BufReader::new(f);
