@@ -73,10 +73,9 @@ pub fn alu(
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
-
-    use super::*;
     use test_util::*;
 
     #[test]
