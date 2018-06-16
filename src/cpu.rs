@@ -118,3 +118,17 @@ impl Cpu {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test_util::*;
+
+    //#[test]
+    fn cpu_test() {
+        let mut cpu = Cpu::new();
+        let result = cpu.cycle(u2b(0b_0), u2b(0b_0011000000111001), false);
+        assert_eq!(result.write_memory, false);
+        assert_eq!(result.pc, u2b15(0b_0000_0000_0000_0001));
+    }
+}

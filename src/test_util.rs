@@ -29,6 +29,12 @@ pub fn u2b14(a: u16) -> [bool; 14] {
     target
 }
 
+pub fn u2b15(a: u16) -> [bool; 15] {
+    let mut target: [bool; 15] = [false; 15];
+    target.copy_from_slice(&u2b(a)[0..15]);
+    target
+}
+
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn bool_array_to_u16(a: [bool; 16]) -> u16 {
       (if a[0]  { 1 << 0  } else { 0 })

@@ -1,6 +1,6 @@
-use const_value;
 use adder::*;
 use basic_gate::*;
+use const_value;
 use multi_gate::*;
 
 pub fn alu(
@@ -15,17 +15,23 @@ pub fn alu(
 ) -> ([bool; 16], bool, bool) {
     let x = mux4way16(
         x,
-        const_value::ZERO,
         not16(x),
+        const_value::ZERO,
         /* undefined value*/ const_value::FULL,
         [zx, nx],
     );
     let y = mux4way16(
         y,
-        const_value::ZERO,
         not16(y),
+        const_value::ZERO,
         /* undefined value*/ const_value::FULL,
         [zy, ny],
+    );
+    println!(
+        "alu [zx,nx,zy,ny]:{:?} x:{:?}, y:{:?}",
+        [zx, nx, zy, ny],
+        x,
+        y
     );
 
     let result = mux4way16(
@@ -39,7 +45,6 @@ pub fn alu(
     let ng_result = not16(result);
     (
         result,
-        result[15],
         and(
             and(
                 and(
@@ -62,88 +67,83 @@ pub fn alu(
                 ),
             ),
         ),
+        result[15],
     )
 }
 
 #[cfg(test)]
 mod tests {
-    use test_util::*;
+    use std::fs;
+    use std::io::{BufRead, BufReader};
+
     use super::*;
+    use test_util::*;
 
     #[test]
-    fn and_add_test() {
-        assert_eq!(
-            (u2b(0b_0000_0000_0000_0001_u16), false, false),
-            alu(
-                u2b(0b0000_0000_0000_0011_u16),
-                u2b(0b0000_0000_0000_0001_u16),
-                false,
-                false,
-                false,
-                false,
-                false,
-                false
-            )
-        );
-        assert_eq!(
-            (u2b(0b0000_0000_0000_0100_u16), false, false),
-            alu(
-                u2b(0b0000_0000_0000_0011_u16),
-                u2b(0b0000_0000_0000_0001_u16),
-                false,
-                false,
-                false,
-                false,
-                true,
-                false
-            )
-        );
+    fn alu_test() {
+        let f = fs::File::open("test/ALU.cmp").unwrap();
+        let reader = BufReader::new(f);
+
+        let mut counter = 0;
+        for line in reader.lines().skip(1) {
+            counter = counter + 1;
+            let l = line.unwrap();
+            let tokens = l.split("|")
+                .map(|str| str.trim())
+                .filter(|str| !str.is_empty())
+                .collect::<Vec<&str>>();
+
+            // input
+            let x = u16::from_str_radix(tokens[0], 2).unwrap();
+            let y = u16::from_str_radix(tokens[1], 2).unwrap();
+            let zx = u16::from_str_radix(tokens[2], 2).unwrap() == 1;
+            let nx = u16::from_str_radix(tokens[3], 2).unwrap() == 1;
+            let zy = u16::from_str_radix(tokens[4], 2).unwrap() == 1;
+            let ny = u16::from_str_radix(tokens[5], 2).unwrap() == 1;
+            let f = u16::from_str_radix(tokens[6], 2).unwrap() == 1;
+            let no = u16::from_str_radix(tokens[7], 2).unwrap() == 1;
+            // output
+            let out = u16::from_str_radix(tokens[8], 2).unwrap();
+            let zr = u16::from_str_radix(tokens[9], 2).unwrap() == 1;
+            let ng = u16::from_str_radix(tokens[10], 2).unwrap() == 1;
+
+            let result = alu(u2b(x), u2b(y), zx, nx, zy, ny, f, no);
+
+            assert_eq!(u2b(out), result.0);
+            assert_eq!(zr, result.1);
+            assert_eq!(ng, result.2);
+        }
     }
 
     #[test]
-    fn out_test() {
-        assert_eq!(
-            (u2b(0b_1111_1111_1111_1011_u16), true, false),
-            alu(
-                u2b(0b_0000_0000_0000_0011_u16),
-                u2b(0b_0000_0000_0000_0001_u16),
-                false,
-                false,
-                false,
-                false,
-                true,
-                true
-            )
-        );
-    }
+    fn alu_nostat_test() {
+        let f = fs::File::open("test/ALU-nostat.cmp").unwrap();
+        let reader = BufReader::new(f);
 
-    #[test]
-    fn zx_zy_test() {
-        assert_eq!(
-            (u2b(0b_1010_1010_1010_1010_u16), true, false),
-            alu(
-                u2b(0b_0101_0101_0101_0101_u16),
-                u2b(0b_1010_1010_1010_1010_u16),
-                false,
-                true,
-                false,
-                false,
-                true,
-                false
-            )
-        );
-        assert_eq!(
-            (u2b(0b_0101_0101_0101_0101_u16), false, false),
-            alu(
-                u2b(0b_0101_0101_0101_0101_u16),
-                u2b(0b_1010_1010_1010_1010_u16),
-                false,
-                false,
-                false,
-                true,
-                true,
-                false
-            )
-        );
+        let mut counter = 0;
+        for line in reader.lines().skip(1) {
+            counter = counter + 1;
+            let l = line.unwrap();
+            let tokens = l.split("|")
+                .map(|str| str.trim())
+                .filter(|str| !str.is_empty())
+                .collect::<Vec<&str>>();
+
+            // input
+            let x = u16::from_str_radix(tokens[0], 2).unwrap();
+            let y = u16::from_str_radix(tokens[1], 2).unwrap();
+            let zx = u16::from_str_radix(tokens[2], 2).unwrap() == 1;
+            let nx = u16::from_str_radix(tokens[3], 2).unwrap() == 1;
+            let zy = u16::from_str_radix(tokens[4], 2).unwrap() == 1;
+            let ny = u16::from_str_radix(tokens[5], 2).unwrap() == 1;
+            let f = u16::from_str_radix(tokens[6], 2).unwrap() == 1;
+            let no = u16::from_str_radix(tokens[7], 2).unwrap() == 1;
+            // output
+            let out = u16::from_str_radix(tokens[8], 2).unwrap();
+
+            let result = alu(u2b(x), u2b(y), zx, nx, zy, ny, f, no);
+
+            assert_eq!(u2b(out), result.0);
+        }
     }
 }
