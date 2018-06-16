@@ -88,6 +88,8 @@ impl Register {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
+    use std::io::{BufRead, BufReader};
     use test_util::*;
 
     #[test]
@@ -139,4 +141,37 @@ mod tests {
         );
     }
 
+    #[test]
+    fn register_maji_test() {
+        let mut register = Register::new();
+
+        let f = fs::File::open("test/Register.cmp").unwrap();
+        let reader = BufReader::new(f);
+
+        let mut counter = 0;
+        for line in reader.lines().skip(1) {
+            counter = counter + 1;
+            let l = line.unwrap();
+            let tokens = l.split("|")
+                .map(|str| str.trim())
+                .filter(|str| !str.is_empty())
+                .collect::<Vec<&str>>();
+
+            println!("tokens={:?}", tokens);
+
+            // input
+            let time = tokens[0];
+            if !time.ends_with("+") {
+                continue;
+            }
+
+            let input = tokens[1].parse::<i16>().unwrap();
+            let load = u16::from_str_radix(tokens[2], 2).unwrap() == 1;
+            // output
+            let output = tokens[3].parse::<i16>().unwrap();
+
+            let result = register.register(i2b(input), load);
+            assert_eq!(i2b(output), result);
+        }
+    }
 }

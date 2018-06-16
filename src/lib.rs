@@ -12,3 +12,4 @@ pub mod flip_flap;
 pub mod ram;
 pub mod counter;
 pub mod screen;
+pub mod cpu;
