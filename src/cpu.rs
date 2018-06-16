@@ -37,13 +37,15 @@ impl Cpu {
         let a_register_current_value = self.a_register.register(ZERO, false);
         let d_register_current_value = self.d_register.register(ZERO, false);
 
-        let is_c = instruction[0];
+        let is_c = instruction[0]; // C命令なら true
 
-        let alu_flag = instruction[3];
+        let use_memory = instruction[3]; //
+
+        let alu_y_value = mux16(a_register_current_value, in_memory, use_memory);
 
         let alu_result = alu(
-            [false; 16],
-            [false; 16],
+            d_register_current_value,
+            alu_y_value,
             instruction[4],
             instruction[5],
             instruction[6],
