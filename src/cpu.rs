@@ -4,6 +4,7 @@ use const_value::*;
 use counter::*;
 use flip_flap::*;
 use multi_gate::*;
+use test_util::*;
 
 pub struct Cpu {
     a_register: Register,
@@ -36,7 +37,6 @@ impl Cpu {
         // 配線の都合で現在値を先に読みだしておく
         let a_register_current_value = self.a_register.register(ZERO, false);
         let d_register_current_value = self.d_register.register(ZERO, false);
-
         let is_c_command = instruction[15]; // C命令なら true
         let use_memory = instruction[12];
         let alu_y_value = mux16(a_register_current_value, in_memory, use_memory);
@@ -65,8 +65,30 @@ impl Cpu {
 
         let a_register_store_value = mux16(instruction, alu_result.0, is_c_command);
 
-        println!("is_c:{}, inst:{:?}", is_c_command, instruction);
-        println!("a_register_store_value:{:?}", a_register_store_value);
+        println!(
+            "d_register_current_value:{:16b} ({})\na_register_current_value:{:16b} ({})",
+            b2u(d_register_current_value),
+            b2u(d_register_current_value),
+            b2u(a_register_current_value),
+            b2u(a_register_current_value)
+        );
+        println!(
+            "alu_x:{:16b} ({})\nalu_y:{:16b} ({})",
+            b2u(d_register_current_value),
+            b2u(d_register_current_value),
+            b2u(alu_y_value),
+            b2u(alu_y_value)
+        );
+        println!(
+            "alu_result:{:16b} ({})",
+            b2u(alu_result.0),
+            b2u(alu_result.0)
+        );
+        println!(
+            "a_register_store_value:{:16b} ({})",
+            b2u(a_register_store_value),
+            b2u(a_register_store_value)
+        );
 
         self.a_register.register(
             a_register_store_value,
@@ -84,13 +106,16 @@ impl Cpu {
         let load = or(
             or(
                 and(jump[0], alu_out_is_negative),
-                and(jump[0], alu_out_is_zero),
+                and(jump[1], alu_out_is_zero),
             ),
             and(jump[2], alu_out_is_positive),
         );
         let pc_result = self.pc.count(a_register_current_value, true, load, reset);
 
-        println!("dest:{:?}, is_c_command:{}", dest, is_c_command);
+        println!(
+            "load:{}, jump:{:?}\nis_neg:{}, is_eq:{}, is_pos:{}",
+            load, jump, alu_out_is_negative, alu_out_is_zero, alu_out_is_positive
+        );
         CpuResult {
             out_memory: alu_result.0,
             write_memory: dest[2],
@@ -135,6 +160,7 @@ impl Cpu {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use const_value::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
     use test_util::*;
@@ -163,7 +189,8 @@ mod tests {
                 continue;
             }
 
-            let in_memory = u16::from_str_radix(tokens[1], 2).unwrap();
+            //let in_memory = u16::from_str_radix(tokens[1], 2).unwrap();
+            let in_memory = tokens[1].parse::<i16>().unwrap();
             let instruction = u16::from_str_radix(tokens[2], 2).unwrap();
             let reset = u16::from_str_radix(tokens[3], 2).unwrap() == 1;
 
@@ -178,7 +205,7 @@ mod tests {
             let pc = tokens[7].parse::<i16>().unwrap();
             let d_register = tokens[8].parse::<i16>().unwrap();
 
-            let result = cpu.cycle(u2b(in_memory), u2b(instruction), reset);
+            let result = cpu.cycle(i2b(in_memory), u2b(instruction), reset);
 
             if out_memory.0 {
                 assert_eq!(i2b(out_memory.1), result.out_memory);
@@ -186,6 +213,7 @@ mod tests {
             assert_eq!(write_memory, result.write_memory);
             assert_eq!(i2b15(address), result.address_memory);
             assert_eq!(i2b15(pc), result.pc);
+            assert_eq!(i2b(d_register), cpu.d_register.register(ZERO, false));
         }
     }
 }
