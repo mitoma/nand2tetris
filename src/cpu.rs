@@ -12,10 +12,10 @@ pub struct Cpu {
 }
 
 pub struct CpuResult {
-    out_memory: [bool; 16],     // outM
-    write_memory: bool,         // writeM
-    address_memory: [bool; 15], // addressM
-    pc: [bool; 15],             // pc
+    pub out_memory: [bool; 16],     // outM
+    pub write_memory: bool,         // writeM
+    pub address_memory: [bool; 15], // addressM
+    pub pc: [bool; 15],             // pc
 }
 
 impl Cpu {
@@ -130,7 +130,6 @@ impl Cpu {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use const_value::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
     use test_util::*;
