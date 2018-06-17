@@ -4,7 +4,6 @@ use const_value::*;
 use counter::*;
 use flip_flap::*;
 use multi_gate::*;
-use test_util::*;
 
 pub struct Cpu {
     a_register: Register,
@@ -65,31 +64,6 @@ impl Cpu {
 
         let a_register_store_value = mux16(instruction, alu_result.0, is_c_command);
 
-        println!(
-            "d_register_current_value:{:16b} ({})\na_register_current_value:{:16b} ({})",
-            b2u(d_register_current_value),
-            b2u(d_register_current_value),
-            b2u(a_register_current_value),
-            b2u(a_register_current_value)
-        );
-        println!(
-            "alu_x:{:16b} ({})\nalu_y:{:16b} ({})",
-            b2u(d_register_current_value),
-            b2u(d_register_current_value),
-            b2u(alu_y_value),
-            b2u(alu_y_value)
-        );
-        println!(
-            "alu_result:{:16b} ({})",
-            b2u(alu_result.0),
-            b2u(alu_result.0)
-        );
-        println!(
-            "a_register_store_value:{:16b} ({})",
-            b2u(a_register_store_value),
-            b2u(a_register_store_value)
-        );
-
         self.a_register.register(
             a_register_store_value,
             or(
@@ -112,10 +86,6 @@ impl Cpu {
         );
         let pc_result = self.pc.count(a_register_current_value, true, load, reset);
 
-        println!(
-            "load:{}, jump:{:?}\nis_neg:{}, is_eq:{}, is_pos:{}",
-            load, jump, alu_out_is_negative, alu_out_is_zero, alu_out_is_positive
-        );
         CpuResult {
             out_memory: alu_result.0,
             write_memory: dest[2],
