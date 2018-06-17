@@ -27,12 +27,6 @@ pub fn alu(
         /* undefined value*/ const_value::FULL,
         [zy, ny],
     );
-    println!(
-        "alu [zx,nx,zy,ny]:{:?} x:{:?}, y:{:?}",
-        [zx, nx, zy, ny],
-        x,
-        y
-    );
 
     let result = mux4way16(
         and16(x, y),

@@ -36,26 +36,34 @@ impl Cpu {
         // 配線の都合で現在値を先に読みだしておく
         let a_register_current_value = self.a_register.register(ZERO, false);
         let d_register_current_value = self.d_register.register(ZERO, false);
-
-        let is_c_command = instruction[0]; // C命令なら true
-        let use_memory = instruction[3];
+        let is_c_command = instruction[15]; // C命令なら true
+        let use_memory = instruction[12];
         let alu_y_value = mux16(a_register_current_value, in_memory, use_memory);
 
         let alu_result = alu(
             d_register_current_value,
             alu_y_value,
-            instruction[4],
-            instruction[5],
-            instruction[6],
-            instruction[7],
-            instruction[8],
+            instruction[11],
+            instruction[10],
             instruction[9],
+            instruction[8],
+            instruction[7],
+            instruction[6],
         );
 
-        let dest = [instruction[10], instruction[11], instruction[12]];
-        let jump = [instruction[13], instruction[14], instruction[15]];
+        let dest = [
+            and(is_c_command, instruction[5]),
+            and(is_c_command, instruction[4]),
+            and(is_c_command, instruction[3]),
+        ];
+        let jump = [
+            and(is_c_command, instruction[2]),
+            and(is_c_command, instruction[1]),
+            and(is_c_command, instruction[0]),
+        ];
 
-        let a_register_store_value = mux16(alu_result.0, instruction, is_c_command);
+        let a_register_store_value = mux16(instruction, alu_result.0, is_c_command);
+
         self.a_register.register(
             a_register_store_value,
             or(
@@ -72,7 +80,7 @@ impl Cpu {
         let load = or(
             or(
                 and(jump[0], alu_out_is_negative),
-                and(jump[0], alu_out_is_zero),
+                and(jump[1], alu_out_is_zero),
             ),
             and(jump[2], alu_out_is_positive),
         );
@@ -122,13 +130,60 @@ impl Cpu {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use const_value::*;
+    use std::fs;
+    use std::io::{BufRead, BufReader};
     use test_util::*;
 
-    //#[test]
-    fn cpu_test() {
+    #[test]
+    fn test_cpu() {
         let mut cpu = Cpu::new();
-        let result = cpu.cycle(u2b(0b_0), u2b(0b_0011000000111001), false);
-        assert_eq!(result.write_memory, false);
-        assert_eq!(result.pc, u2b15(0b_0000_0000_0000_0001));
+
+        let f = fs::File::open("test/CPU.cmp").unwrap();
+        let reader = BufReader::new(f);
+
+        let mut counter = 0;
+        for line in reader.lines().skip(1) {
+            counter = counter + 1;
+            let l = line.unwrap();
+            let tokens = l.split("|")
+                .map(|str| str.trim())
+                .filter(|str| !str.is_empty())
+                .collect::<Vec<&str>>();
+
+            println!("tokens={:?}", tokens);
+
+            // input
+            let time = tokens[0];
+            if !time.ends_with("+") {
+                continue;
+            }
+
+            //let in_memory = u16::from_str_radix(tokens[1], 2).unwrap();
+            let in_memory = tokens[1].parse::<i16>().unwrap();
+            let instruction = u16::from_str_radix(tokens[2], 2).unwrap();
+            let reset = u16::from_str_radix(tokens[3], 2).unwrap() == 1;
+
+            // output
+            let out_memory = if tokens[4].starts_with("*") {
+                (false, 0_i16)
+            } else {
+                (true, tokens[4].parse::<i16>().unwrap())
+            };
+            let write_memory = u16::from_str_radix(tokens[5], 2).unwrap() == 1;
+            let address = tokens[6].parse::<i16>().unwrap();
+            let pc = tokens[7].parse::<i16>().unwrap();
+            let d_register = tokens[8].parse::<i16>().unwrap();
+
+            let result = cpu.cycle(i2b(in_memory), u2b(instruction), reset);
+
+            if out_memory.0 {
+                assert_eq!(i2b(out_memory.1), result.out_memory);
+            }
+            assert_eq!(write_memory, result.write_memory);
+            assert_eq!(i2b15(address), result.address_memory);
+            assert_eq!(i2b15(pc), result.pc);
+            assert_eq!(i2b(d_register), cpu.d_register.register(ZERO, false));
+        }
     }
 }
