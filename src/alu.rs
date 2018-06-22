@@ -13,20 +13,8 @@ pub fn alu(
     f: bool,
     no: bool,
 ) -> ([bool; 16], bool, bool) {
-    let x = mux4way16(
-        x,
-        not16(x),
-        const_value::ZERO,
-        /* undefined value*/ const_value::FULL,
-        [zx, nx],
-    );
-    let y = mux4way16(
-        y,
-        not16(y),
-        const_value::ZERO,
-        /* undefined value*/ const_value::FULL,
-        [zy, ny],
-    );
+    let x = mux4way16(x, not16(x), const_value::ZERO, const_value::FULL, [zx, nx]);
+    let y = mux4way16(y, not16(y), const_value::ZERO, const_value::FULL, [zy, ny]);
 
     let result = mux4way16(
         and16(x, y),
