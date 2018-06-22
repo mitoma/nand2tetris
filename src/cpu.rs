@@ -6,9 +6,9 @@ use flip_flap::*;
 use multi_gate::*;
 
 pub struct Cpu {
-    a_register: Register,
-    d_register: Register,
-    pc: Counter,
+    pub a_register: Register,
+    pub d_register: Register,
+    pub pc: Counter,
 }
 
 pub struct CpuResult {

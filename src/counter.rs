@@ -1,7 +1,7 @@
-use multi_gate::*;
-use const_value::*;
 use adder::*;
+use const_value::*;
 use flip_flap::*;
+use multi_gate::*;
 use test_util::*;
 
 pub struct Counter {
@@ -29,13 +29,6 @@ impl Counter {
             ZERO,          // f, f, t
             ZERO,          // f, f, t
             [reset, load, inc],
-        );
-
-        println!(
-            "cur: {}, next: {}, calc:{}",
-            b2u(current_value),
-            b2u(next_value),
-            b2u(calced_value)
         );
         self.register.register(calced_value, true)
     }

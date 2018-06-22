@@ -38,14 +38,10 @@ impl Screen {
             for i in 0..(1024 * 8) {
                 let value = ram.ram(u2b(0), u2b14(i), false);
                 for v in value.iter() {
-                    let zero_pos = if counter % 8 == 0 { 64 } else { 0 };
-                    let four_pos = if counter % 8 == 4 { 64 } else { 0 };
+                    //                    let zero_pos = if counter % 8 == 0 { 64 } else { 0 };
+                    //                  let four_pos = if counter % 8 == 4 { 64 } else { 0 };
 
-                    let color = if *v {
-                        [zero_pos, 255, four_pos, 255]
-                    } else {
-                        [zero_pos, 0, four_pos, 255]
-                    };
+                    let color = if *v { [0, 255, 0, 255] } else { [0, 0, 0, 255] };
                     let x = counter % 512;
                     let y = counter / 512;
                     canvas.put_pixel(x, y, Rgba(color));
@@ -112,10 +108,11 @@ impl Screen {
         let key_bits = u2b(self.current_keycode);
         let ram = &mut self.ram;
 
-        for i in 0..8 {
-          ram.ram(key_bits, u2b14(0b_0000_0001_0001_1111_u16 + (i << 5)), true);
-        }
+        // 画面の右端にキー入力を書いている
 
+        //for i in 0..8 {
+        //    ram.ram(key_bits, u2b14(0b_0000_0001_0001_1111_u16 + (i << 5)), true);
+        //}
     }
 
     fn is_shift(&mut self, key: Button) -> bool {
