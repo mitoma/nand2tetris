@@ -229,6 +229,29 @@ impl Ram16k {
     }
 }
 
+// debug 用の native 実装
+pub struct Ram32kHiSpeed {
+    pub rams: [u16; 1024 * 32],
+}
+
+impl Ram32kHiSpeed {
+    pub fn new() -> Ram32kHiSpeed {
+        Ram32kHiSpeed {
+            rams: [0; 1024 * 32],
+        }
+    }
+
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 15], load: bool) -> [bool; 16] {
+        let address = b152u(address) as usize;
+        let result = u2b(self.rams[address]);
+        if load {
+            let a_u16 = b2u(a);
+            self.rams[address] = a_u16;
+        }
+        result
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

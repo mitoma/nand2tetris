@@ -7,6 +7,11 @@ authors = ["mitoma <mutetheradio@gmail.com>"]
 name = "screen_runner"
 path = "src/screen_runner.rs"
 
+[[bin]]
+name = "computer_runner"
+path = "src/computer_runner.rs"
+
+
 [dependencies]
 piston = "0.36.0"
 piston_window = "0.77.0"

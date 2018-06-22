@@ -108,6 +108,25 @@ pub fn b142u(a: [bool; 14]) -> u16 {
     + (if a[13] { 1 << 13 } else { 0 })
 }
 
+#[cfg_attr(rustfmt, rustfmt_skip)]
+pub fn b152u(a: [bool; 15]) -> u16 {
+      (if a[0]  { 1 << 0  } else { 0 })
+    + (if a[1]  { 1 << 1  } else { 0 })
+    + (if a[2]  { 1 << 2  } else { 0 })
+    + (if a[3]  { 1 << 3  } else { 0 })
+    + (if a[4]  { 1 << 4  } else { 0 })
+    + (if a[5]  { 1 << 5  } else { 0 })
+    + (if a[6]  { 1 << 6  } else { 0 })
+    + (if a[7]  { 1 << 7  } else { 0 })
+    + (if a[8]  { 1 << 8  } else { 0 })
+    + (if a[9]  { 1 << 9  } else { 0 })
+    + (if a[10] { 1 << 10 } else { 0 })
+    + (if a[11] { 1 << 11 } else { 0 })
+    + (if a[12] { 1 << 12 } else { 0 })
+    + (if a[13] { 1 << 13 } else { 0 })
+    + (if a[14] { 1 << 13 } else { 0 })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
