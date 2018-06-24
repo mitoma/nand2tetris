@@ -2,7 +2,6 @@ use adder::*;
 use const_value::*;
 use flip_flap::*;
 use multi_gate::*;
-use test_util::*;
 
 pub struct Counter {
     register: Register,
@@ -37,6 +36,7 @@ impl Counter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use test_util::*;
 
     #[test]
     fn test_counter() {
