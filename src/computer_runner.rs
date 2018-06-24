@@ -3,6 +3,7 @@ extern crate nand2tetlis;
 use nand2tetlis::computer::*;
 use std::env;
 use std::thread;
+use std::time::Duration;
 
 fn main() {
     // main thread の stack サイズの都合で thread を新たに作っている
@@ -16,7 +17,14 @@ fn main() {
                 .nth(2)
                 .ok_or("max_cycle_count is none.".to_owned())
                 .and_then(|v| {
-                    v.parse::<i32>()
+                    v.parse::<u32>()
+                        .map_err(|_err| "please input number".to_owned())
+                });
+            let sleep_ms = env::args()
+                .nth(3)
+                .ok_or("sleep_ms is none.".to_owned())
+                .and_then(|v| {
+                    v.parse::<u64>()
                         .map_err(|_err| "please input number".to_owned())
                 });
             let mut computer = Computer::new();
@@ -38,6 +46,10 @@ fn main() {
                 counter += 1;
                 match max_cycle_count {
                     Ok(value) if counter > value => std::process::exit(0),
+                    _ => {}
+                }
+                match sleep_ms {
+                    Ok(value) => thread::sleep(Duration::from_millis(value)),
                     _ => {}
                 }
             }
