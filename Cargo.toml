@@ -13,9 +13,9 @@ path = "src/computer_runner.rs"
 
 
 [dependencies]
-piston = "0.36.0"
-piston_window = "0.77.0"
+piston = "0.37.0"
+piston_window = "0.80.0"
 piston2d-graphics = "0.26.0"
-pistoncore-glutin_window = "0.45.0"
-piston2d-opengl_graphics = "0.52.0"
-image = "0.18.0"
+pistoncore-glutin_window = "0.47.0"
+piston2d-opengl_graphics = "0.53.0"
+image = "0.19.0"

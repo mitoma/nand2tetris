@@ -12,10 +12,10 @@ pub struct Cpu {
 }
 
 pub struct CpuResult {
-    pub out_memory: [bool; 16],     // outM
-    pub write_memory: bool,         // writeM
-    pub address_memory: [bool; 15], // addressM
-    pub pc: [bool; 15],             // pc
+    pub out_memory: [bool; 16],
+    pub write_memory: bool,
+    pub address_memory: [bool; 15],
+    pub pc: [bool; 15],
 }
 
 impl Cpu {
@@ -158,7 +158,6 @@ mod tests {
                 continue;
             }
 
-            //let in_memory = u16::from_str_radix(tokens[1], 2).unwrap();
             let in_memory = tokens[1].parse::<i16>().unwrap();
             let instruction = u16::from_str_radix(tokens[2], 2).unwrap();
             let reset = u16::from_str_radix(tokens[3], 2).unwrap() == 1;
