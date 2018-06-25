@@ -11,6 +11,10 @@ path = "src/screen_runner.rs"
 name = "computer_runner"
 path = "src/computer_runner.rs"
 
+[[bin]]
+name = "assembler"
+path = "src/assembler.rs"
+
 
 [dependencies]
 piston = "0.37.0"
