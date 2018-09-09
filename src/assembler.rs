@@ -3,7 +3,7 @@ extern crate nand2tetlis;
 use std::collections;
 use std::env;
 use std::fs;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Error};
 
 fn main() {
     let program_path = env::args().nth(1);
@@ -24,20 +24,31 @@ fn assemble(program_path: String) {
     let reader = BufReader::new(f);
 
     //let symbol_table = collections::HashMap::new();
+
     for line in reader.lines() {
-        match line.unwrap().trim() {
-            v if v.starts_with("//") => {} // コメント
-            v if v.starts_with("@") => println!("A命令"),
-            v if v.starts_with("(") && v.ends_with(")") => println!("Loop"),
-            v if v.is_empty() => {},
-            v => println!("{}", parse_c_command(v)),
+        let mut line = normalize(line);
+        match line {
+            ref v if v.starts_with("//") => {} // コメント
+            ref v if v.starts_with("@") => println!("A命令"),
+            ref v if v.starts_with("(") && v.ends_with(")") => println!("Loop"),
+            ref v if v.is_empty() => {}
+            ref v => println!("{}", parse_c_command(v.to_string())),
         }
     }
 }
 
-fn parse_c_command(command: &str) -> String {
+fn normalize(line: Result<String, Error>) -> String {
+    match line {
+        Ok(line) => line,
+        _ => "".to_string(),
+    }.trim()
+        .to_string()
+}
+
+fn parse_c_command(command: String) -> String {
     println!("org_command:{}", command);
 
+    let command = &command;
     let dest = match command {
         v if v.starts_with("M=") => "001",
         v if v.starts_with("D=") => "010",
@@ -101,5 +112,5 @@ fn parse_c_command(command: &str) -> String {
         "comp:{}, dest:{}, jump:{}, command:{}",
         comp, dest, jump, command
     );
-    "111".to_string() + comp + dest + jump
+    format!("111{}{}{}", comp, dest, jump)
 }
