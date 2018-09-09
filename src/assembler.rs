@@ -34,7 +34,7 @@ fn assemble(program_path: &str) {
                     v if v.starts_with("@") => println!("A命令"),
                     v if v.starts_with("(") && v.ends_with(")") => println!("Loop"),
                     v if v.is_empty() => {}
-                    v => println!("{}", parse_c_command(v.to_string())),
+                    v => println!("{}", parse_c_command(v)),
                 }
             }
             _ => {}
@@ -42,7 +42,7 @@ fn assemble(program_path: &str) {
     }
 }
 
-fn parse_c_command(command: String) -> String {
+fn parse_c_command(command: &str) -> String {
     println!("org_command:{}", command);
 
     let command = &command;
