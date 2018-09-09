@@ -26,7 +26,7 @@ fn assemble(program_path: &str) {
     //let symbol_table = collections::HashMap::new();
 
     for line in reader.lines() {
-        let line = line.map(|l| l.to_string().trim().to_owned());
+        let line = line.map(|l| l.trim().to_owned());
         match line {
             Ok(line) => {
                 match &line {
