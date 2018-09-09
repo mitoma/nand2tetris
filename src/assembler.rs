@@ -6,7 +6,7 @@ use std::fs;
 use std::io::{BufRead, BufReader, Error};
 
 fn main() {
-    let program_path = env::args().nth(1);
+    let program_path = &env::args().nth(1);
     match program_path {
         Some(path) => assemble(path),
         None => {
@@ -19,30 +19,27 @@ fn main() {
     }
 }
 
-fn assemble(program_path: String) {
+fn assemble(program_path: &str) {
     let f = fs::File::open(program_path).unwrap();
     let reader = BufReader::new(f);
 
     //let symbol_table = collections::HashMap::new();
 
     for line in reader.lines() {
-        let mut line = normalize(line);
+        let line = line.map(|l| l.to_string().trim().to_owned());
         match line {
-            ref v if v.starts_with("//") => {} // コメント
-            ref v if v.starts_with("@") => println!("A命令"),
-            ref v if v.starts_with("(") && v.ends_with(")") => println!("Loop"),
-            ref v if v.is_empty() => {}
-            ref v => println!("{}", parse_c_command(v.to_string())),
-        }
+            Ok(line) => {
+                match &line {
+                    v if v.starts_with("//") => {} // コメント
+                    v if v.starts_with("@") => println!("A命令"),
+                    v if v.starts_with("(") && v.ends_with(")") => println!("Loop"),
+                    v if v.is_empty() => {}
+                    v => println!("{}", parse_c_command(v.to_string())),
+                }
+            }
+            _ => {}
+        };
     }
-}
-
-fn normalize(line: Result<String, Error>) -> String {
-    match line {
-        Ok(line) => line,
-        _ => "".to_string(),
-    }.trim()
-        .to_string()
 }
 
 fn parse_c_command(command: String) -> String {
