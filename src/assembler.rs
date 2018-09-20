@@ -35,32 +35,11 @@ fn assemble(program_path: &str) {
                     v if v.starts_with("//") => None, // コメント
                     v if v.starts_with("@") => {
                         let symbol_name = &v[1..];
-                        match symbol_name {
-                            "SP" => 0,
-                            "LCL" => 1,
-                            "ARG" => 2,
-                            "THIS" => 3,
-                            "R0" => 0,
-                            "R1" => 1,
-                            "R2" => 2,
-                            "R3" => 3,
-                            "R4" => 4,
-                            "R5" => 5,
-                            "R6" => 6,
-                            "R7" => 7,
-                            "R8" => 8,
-                            "R9" => 9,
-                            "R10" => 10,
-                            "R11" => 11,
-                            "R12" => 12,
-                            "R13" => 13,
-                            "R14" => 14,
-                            "R15" => 15,
-                            "SCREEN" => 0x4000, // このへんまだ適当
-                            "KBD" => 0x6000,
-                            _ => 1,
-                        };
-                        //                        println!("A命令 symbol:{}", symbol_name);
+                        println!(
+                            "A命令 symbol:{}, value:{}",
+                            symbol_name,
+                            parse_a_command(symbol_name)
+                        );
                         None
                     }
                     v if v.starts_with("(") && v.ends_with(")") => {
@@ -77,8 +56,32 @@ fn assemble(program_path: &str) {
     }
 }
 
-fn parse_a_command(command: &str) -> String {
-    String::new()
+fn parse_a_command(symbol_name: &str) -> u16 {
+    match symbol_name {
+        "SP" => 0,
+        "LCL" => 1,
+        "ARG" => 2,
+        "THIS" => 3,
+        "R0" => 0,
+        "R1" => 1,
+        "R2" => 2,
+        "R3" => 3,
+        "R4" => 4,
+        "R5" => 5,
+        "R6" => 6,
+        "R7" => 7,
+        "R8" => 8,
+        "R9" => 9,
+        "R10" => 10,
+        "R11" => 11,
+        "R12" => 12,
+        "R13" => 13,
+        "R14" => 14,
+        "R15" => 15,
+        "SCREEN" => 0x4000, // このへんまだ適当
+        "KBD" => 0x6000,
+        _ => 1,
+    }
 }
 
 fn parse_c_command(command: &str) -> String {
