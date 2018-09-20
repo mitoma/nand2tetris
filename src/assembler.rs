@@ -1,9 +1,11 @@
 extern crate nand2tetlis;
 
-use std::collections;
+use std::collections::HashMap;
 use std::env;
 use std::fs;
-use std::io::{BufRead, BufReader, Error};
+use std::io::{BufRead, BufReader};
+
+static symbol_address: u16 = 0x10_u16;
 
 fn main() {
     let program_path = &env::args().nth(1);
@@ -23,28 +25,63 @@ fn assemble(program_path: &str) {
     let f = fs::File::open(program_path).unwrap();
     let reader = BufReader::new(f);
 
-    //let symbol_table = collections::HashMap::new();
+    let symbol_table: HashMap<&str, u16> = HashMap::new();
 
     for line in reader.lines() {
         let line = line.map(|l| l.trim().to_owned());
-        match line {
+        let asm_line = match line {
             Ok(line) => {
                 match &line {
-                    v if v.starts_with("//") => {} // コメント
-                    v if v.starts_with("@") => println!("A命令"),
-                    v if v.starts_with("(") && v.ends_with(")") => println!("Loop"),
-                    v if v.is_empty() => {}
-                    v => println!("{}", parse_c_command(v)),
+                    v if v.starts_with("//") => None, // コメント
+                    v if v.starts_with("@") => {
+                        let symbol_name = &v[1..];
+                        match symbol_name {
+                            "SP" => 0,
+                            "LCL" => 1,
+                            "ARG" => 2,
+                            "THIS" => 3,
+                            "R0" => 0,
+                            "R1" => 1,
+                            "R2" => 2,
+                            "R3" => 3,
+                            "R4" => 4,
+                            "R5" => 5,
+                            "R6" => 6,
+                            "R7" => 7,
+                            "R8" => 8,
+                            "R9" => 9,
+                            "R10" => 10,
+                            "R11" => 11,
+                            "R12" => 12,
+                            "R13" => 13,
+                            "R14" => 14,
+                            "R15" => 15,
+                            "SCREEN" => 0x4000, // このへんまだ適当
+                            "KBD" => 0x6000,
+                            _ => 1,
+                        };
+                        //                        println!("A命令 symbol:{}", symbol_name);
+                        None
+                    }
+                    v if v.starts_with("(") && v.ends_with(")") => {
+                        println!("Loop");
+                        None
+                    }
+                    v if v.is_empty() => None,
+                    v => Some(parse_c_command(v)),
                 }
             }
-            _ => {}
+            _ => None,
         };
+        asm_line.map(|l| println!("asm_line: {}", l));
     }
 }
 
-fn parse_c_command(command: &str) -> String {
-    println!("org_command:{}", command);
+fn parse_a_command(command: &str) -> String {
+    String::new()
+}
 
+fn parse_c_command(command: &str) -> String {
     let command = &command;
     let dest = match command {
         v if v.starts_with("M=") => "001",
@@ -105,9 +142,5 @@ fn parse_c_command(command: &str) -> String {
         "D|M" => "1010101",
         _ => "",
     };
-    println!(
-        "comp:{}, dest:{}, jump:{}, command:{}",
-        comp, dest, jump, command
-    );
     format!("111{}{}{}", comp, dest, jump)
 }
