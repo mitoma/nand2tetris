@@ -27,30 +27,36 @@ fn assemble(program_path: &str) {
 
     let symbol_table: HashMap<&str, u16> = HashMap::new();
 
-    for line in reader.lines() {
-        let line = line.map(|l| l.trim().to_owned());
-        let asm_line = match line {
-            Ok(line) => {
-                match &line {
-                    v if v.starts_with("//") => None, // コメント
-                    v if v.starts_with("@") => {
-                        let symbol_name = &v[1..];
-                        println!(
-                            "A命令 symbol:{}, value:{}",
-                            symbol_name,
-                            parse_a_command(symbol_name)
-                        );
-                        None
-                    }
-                    v if v.starts_with("(") && v.ends_with(")") => {
-                        println!("Loop");
-                        None
-                    }
-                    v if v.is_empty() => None,
-                    v => Some(parse_c_command(v)),
-                }
+    let lines: Vec<String> = reader
+        .lines()
+        .map(|l| l.unwrap().trim().to_owned())
+        .collect();
+
+    // ここで symbol_table を作る予定
+    for line in &lines {
+        if line.starts_with("(") && line.ends_with(")") {
+            println!("Loop {}", line);
+        }
+    }
+
+    for line in &lines {
+        let asm_line = match &line {
+            v if v.starts_with("//") => None, // コメント
+            v if v.starts_with("@") => {
+                let symbol_name = &v[1..];
+                println!(
+                    "A命令 symbol:{}, value:{}",
+                    symbol_name,
+                    parse_a_command(symbol_name)
+                );
+                None
             }
-            _ => None,
+            v if v.starts_with("(") && v.ends_with(")") => {
+                println!("Loop");
+                None
+            }
+            v if v.is_empty() => None,
+            v => Some(parse_c_command(v)),
         };
         asm_line.map(|l| println!("asm_line: {}", l));
     }
