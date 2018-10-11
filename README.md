@@ -17,3 +17,9 @@ cargo run --bin computer_runner [hack binary path] [max_cycle] [wait_ms]
 ```text
 cargo run --bin computer_runner test/MyRect.hack 1000
 ```
+
+## assembler の実行
+
+```text
+cargo run --bin assembler test/MyRect.asm
+```
