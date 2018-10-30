@@ -1,0 +1,10 @@
+[package]
+name = "hack_assembler"
+version = "0.1.0"
+authors = ["mitoma <mutetheradio@gmail.com>"]
+
+[[bin]]
+name = "assembler"
+path = "src/assembler.rs"
+
+[dependencies]

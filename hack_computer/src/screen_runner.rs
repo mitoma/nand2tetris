@@ -1,8 +1,8 @@
-extern crate nand2tetlis;
+extern crate hack_computer;
 
-use nand2tetlis::ram::*;
-use nand2tetlis::screen::*;
-use nand2tetlis::test_util::*;
+use hack_computer::ram::*;
+use hack_computer::screen::*;
+use hack_computer::test_util::*;
 
 use std::thread;
 

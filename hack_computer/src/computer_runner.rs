@@ -1,6 +1,6 @@
-extern crate nand2tetlis;
+extern crate hack_computer;
 
-use nand2tetlis::computer::*;
+use hack_computer::computer::*;
 use std::env;
 use std::thread;
 use std::time::Duration;
