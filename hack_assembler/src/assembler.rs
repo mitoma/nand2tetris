@@ -25,7 +25,7 @@ fn assemble(program_path: &str) {
         .lines()
         .map(|l| l.unwrap().trim().to_owned())
         .collect();
-    let mut symbol_table: HashMap<&str, u16> = HashMap::new();
+    let mut symbol_table = create_symble_table();
 
     // ここで symbol_table を作る予定
     let mut current_line_num = 0;
@@ -44,7 +44,7 @@ fn assemble(program_path: &str) {
         }
     }
 
-    let mut current_symbol_address = 1024;
+    let mut current_symbol_address = 15;
     for line in &lines {
         let asm_line = match &line {
             v if v.starts_with("//") => None, // コメント
@@ -65,6 +65,33 @@ fn assemble(program_path: &str) {
         };
         asm_line.map(|l| println!("{}", l));
     }
+}
+
+fn create_symble_table() -> HashMap<&'static str, u16> {
+    let mut symbol_table: HashMap<&str, u16> = HashMap::new();
+    symbol_table.insert("SP", 0);
+    symbol_table.insert("LCL", 1);
+    symbol_table.insert("ARG", 2);
+    symbol_table.insert("THIS", 3);
+    symbol_table.insert("R0", 0);
+    symbol_table.insert("R1", 1);
+    symbol_table.insert("R2", 2);
+    symbol_table.insert("R3", 3);
+    symbol_table.insert("R4", 4);
+    symbol_table.insert("R5", 5);
+    symbol_table.insert("R6", 6);
+    symbol_table.insert("R7", 7);
+    symbol_table.insert("R8", 8);
+    symbol_table.insert("R9", 9);
+    symbol_table.insert("R10", 10);
+    symbol_table.insert("R11", 11);
+    symbol_table.insert("R12", 12);
+    symbol_table.insert("R13", 13);
+    symbol_table.insert("R14", 14);
+    symbol_table.insert("R15", 15);
+    symbol_table.insert("SCREEN", 0x4000);
+    symbol_table.insert("KBD", 0x6000);
+    symbol_table
 }
 
 fn parse_a_command(symbol_name: &str, symbol_table: &HashMap<&str, u16>) -> u16 {
@@ -91,8 +118,8 @@ fn parse_a_command(symbol_name: &str, symbol_table: &HashMap<&str, u16>) -> u16 
         "R13" => 13,
         "R14" => 14,
         "R15" => 15,
-        "SCREEN" => 0x4000, // このへんまだ適当
-        "KBD" => 0x6000,
+        "SCREEN" => 16384, // このへんまだ適当
+        "KBD" => 24576,
         _ => 1,
     }
 }
