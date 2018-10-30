@@ -28,20 +28,12 @@ fn assemble(program_path: &str) {
     let mut symbol_table: HashMap<&str, u16> = HashMap::new();
 
     // ここで symbol_table を作る予定
-    let mut current_symbol_address = 1024;
     let mut current_line_num = 0;
     for line in &lines {
         match &line {
             v if v.starts_with("(") && v.ends_with(")") => {
-                println!("Loop");
                 let v = v.trim_matches(&['(', ')'] as &[_]);
-                println!("Loop {}={}", &v, current_line_num);
                 symbol_table.insert(&v, current_line_num);
-            }
-            v if v.starts_with("@") => {
-                let symbol_name = &v[1..];
-                symbol_table.insert(symbol_name, current_symbol_address);
-                current_symbol_address += 1;
             }
             v if v.starts_with("//") => (),
             v if v.is_empty() => (),
@@ -52,31 +44,33 @@ fn assemble(program_path: &str) {
         }
     }
 
+    let mut current_symbol_address = 1024;
     for line in &lines {
         let asm_line = match &line {
             v if v.starts_with("//") => None, // コメント
             v if v.starts_with("@") => {
                 let symbol_name = &v[1..];
-                println!(
-                    "A命令 symbol:{}, value:{}",
-                    symbol_name,
-                    parse_a_command(symbol_name)
-                );
-                None
+                if !symbol_table.contains_key(symbol_name) {
+                    symbol_table.insert(symbol_name, current_symbol_address);
+                    current_symbol_address += 1;
+                }
+                Some(format!(
+                    "{:016b}",
+                    parse_a_command(symbol_name, &symbol_table)
+                ))
             }
-            v if v.starts_with("(") && v.ends_with(")") => {
-                println!("Loop");
-                None
-            }
+            v if v.starts_with("(") && v.ends_with(")") => None,
             v if v.is_empty() => None,
             v => Some(parse_c_command(v)),
         };
-        asm_line.map(|l| println!("asm_line: {}", l));
+        asm_line.map(|l| println!("{}", l));
     }
 }
 
-fn parse_a_command(symbol_name: &str) -> u16 {
+fn parse_a_command(symbol_name: &str, symbol_table: &HashMap<&str, u16>) -> u16 {
     match symbol_name {
+        v if v.parse::<u16>().is_ok() => v.parse::<u16>().unwrap(),
+        v if symbol_table.contains_key(v) => *(symbol_table.get(v).unwrap()),
         "SP" => 0,
         "LCL" => 1,
         "ARG" => 2,
@@ -156,7 +150,7 @@ fn parse_c_command(command: &str) -> String {
         "!M" => "1110001",
         "-M" => "1110011",
         "M+1" => "1110111",
-        "M-1" => "1110011",
+        "M-1" => "1110010",
         "D+M" => "1000010",
         "D-M" => "1010011",
         "M-D" => "1000111",
