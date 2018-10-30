@@ -5,8 +5,6 @@ use std::env;
 use std::fs;
 use std::io::{BufRead, BufReader};
 
-static symbol_address: u16 = 0x10_u16;
-
 fn main() {
     let program_path = &env::args().nth(1);
     match program_path {
@@ -25,17 +23,34 @@ fn assemble(program_path: &str) {
     let f = fs::File::open(program_path).unwrap();
     let reader = BufReader::new(f);
 
-    let symbol_table: HashMap<&str, u16> = HashMap::new();
-
     let lines: Vec<String> = reader
         .lines()
         .map(|l| l.unwrap().trim().to_owned())
         .collect();
+    let mut symbol_table: HashMap<&str, u16> = HashMap::new();
 
     // ここで symbol_table を作る予定
+    let mut current_symbol_address = 1024;
+    let mut current_line_num = 0;
     for line in &lines {
-        if line.starts_with("(") && line.ends_with(")") {
-            println!("Loop {}", line);
+        match &line {
+            v if v.starts_with("(") && v.ends_with(")") => {
+                println!("Loop");
+                let v = v.trim_matches(&['(', ')'] as &[_]);
+                println!("Loop {}={}", &v, current_line_num);
+                symbol_table.insert(&v, current_line_num);
+            }
+            v if v.starts_with("@") => {
+                let symbol_name = &v[1..];
+                symbol_table.insert(symbol_name, current_symbol_address);
+                current_symbol_address += 1;
+            }
+            v if v.starts_with("//") => (),
+            v if v.is_empty() => (),
+            _ => {
+                current_line_num += 1;
+                ()
+            }
         }
     }
 
