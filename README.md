@@ -21,5 +21,5 @@ cargo run --bin computer_runner test/MyRect.hack 1000
 ## assembler の実行
 
 ```text
-cargo run --bin ../hack_computer/test/MyRect.asm
+cargo run ../hack_computer/test/MyRect.asm
 ```
