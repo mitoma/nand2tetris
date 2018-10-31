@@ -32,11 +32,12 @@ fn assemble(program_path: &str) {
         .lines()
         .map(|l| l.unwrap().trim().to_owned())
         .collect();
+    let commands: Vec<Command> = lines.iter().map(|l| parse_command(&l)).collect();
+
     let mut symbol_table = create_symble_table();
 
     let mut current_line_num = 0;
-    for line in &lines {
-        let command = parse_command(line);
+    for command in &commands {
         match command {
             Command::Loop(v) => {
                 symbol_table.insert(&v, current_line_num);
@@ -47,8 +48,7 @@ fn assemble(program_path: &str) {
     }
 
     let mut current_symbol_address = 15;
-    for line in &lines {
-        let command = parse_command(line);
+    for command in &commands {
         let asm_line = match command {
             Command::Argument(symbol_name) => {
                 if !symbol_table.contains_key(symbol_name) {
