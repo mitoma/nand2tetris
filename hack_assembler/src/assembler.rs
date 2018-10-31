@@ -3,6 +3,13 @@ use std::env;
 use std::fs;
 use std::io::{BufRead, BufReader};
 
+enum Command<'a> {
+    Comment(&'a str),
+    Argument(&'a str),
+    Control(&'a str),
+    Loop(&'a str),
+}
+
 fn main() {
     let program_path = &env::args().nth(1);
     match program_path {
@@ -29,17 +36,13 @@ fn assemble(program_path: &str) {
 
     let mut current_line_num = 0;
     for line in &lines {
-        match &line {
-            v if v.starts_with("(") && v.ends_with(")") => {
-                let v = v.trim_matches(&['(', ')'] as &[_]);
+        let command = parse_command(line);
+        match command {
+            Command::Loop(v) => {
                 symbol_table.insert(&v, current_line_num);
             }
-            v if v.starts_with("//") => (),
-            v if v.is_empty() => (),
-            _ => {
-                current_line_num += 1;
-                ()
-            }
+            Command::Comment(_) => (),
+            Command::Argument(_) | Command::Control(_) => current_line_num += 1,
         }
     }
 
@@ -63,6 +66,22 @@ fn assemble(program_path: &str) {
             v => Some(parse_c_command(v)),
         };
         asm_line.map(|l| println!("{}", l));
+    }
+}
+
+fn parse_command<'a> (line: &'a str) -> Command  {
+    match line {
+        v if v.starts_with("//") => Command::Comment(&v),
+        v if v.starts_with("@") => {
+            let symbol_name = &v[1..];
+            Command::Argument(symbol_name)
+        }
+        v if v.starts_with("(") && v.ends_with(")") => {
+            let symbol_name = v.trim_matches(&['(', ')'] as &[_]);
+            Command::Loop(symbol_name)
+        }
+        v if v.is_empty() => Command::Comment("empty"),
+        v => Command::Control(v),
     }
 }
 
