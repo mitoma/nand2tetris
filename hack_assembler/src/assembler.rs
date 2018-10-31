@@ -30,24 +30,33 @@ fn assemble(program_path: &str) {
 
     let lines: Vec<String> = reader
         .lines()
-        .map(|l| l.unwrap().trim().to_owned())
+        .map(|l| l.unwrap())
+        .map(|l| match l.find("//") {
+            Some(v) => l[0..v].to_string(),
+            None => l,
+        }).map(|l| l.trim().to_owned())
         .collect();
+
     let commands: Vec<Command> = lines.iter().map(|l| parse_command(&l)).collect();
 
     let mut symbol_table = create_symble_table(&commands);
 
-    let mut current_symbol_address = 15;
+    let mut current_symbol_address = 16;
     for command in &commands {
         let asm_line = match command {
             Command::Argument(symbol_name) => {
-                if !symbol_table.contains_key(symbol_name) {
-                    symbol_table.insert(symbol_name, current_symbol_address);
-                    current_symbol_address += 1;
+                if symbol_name.parse::<u16>().is_ok() {
+                    Some(format!("{:016b}", symbol_name.parse::<u16>().unwrap()))
+                } else {
+                    if !symbol_table.contains_key(symbol_name) {
+                        symbol_table.insert(symbol_name, current_symbol_address);
+                        current_symbol_address += 1;
+                    }
+                    Some(format!(
+                        "{:016b}",
+                        parse_a_command(symbol_name, &symbol_table)
+                    ))
                 }
-                Some(format!(
-                    "{:016b}",
-                    parse_a_command(symbol_name, &symbol_table)
-                ))
             }
             Command::Control(v) => Some(parse_c_command(v)),
             Command::Loop(_) | Command::Comment(_) => None,
@@ -95,6 +104,7 @@ fn add_buildin_symbols(mut symbol_table: HashMap<&str, u16>) -> HashMap<&str, u1
     symbol_table.insert("LCL", 1);
     symbol_table.insert("ARG", 2);
     symbol_table.insert("THIS", 3);
+    symbol_table.insert("THAT", 4);
     symbol_table.insert("R0", 0);
     symbol_table.insert("R1", 1);
     symbol_table.insert("R2", 2);
@@ -166,8 +176,8 @@ fn parse_c_command(command: &str) -> String {
         "-A" => "0110011",
         "D+1" => "0011111",
         "A+1" => "0110111",
-        "D-1" => "0001111",
-        "A-1" => "0110011",
+        "D-1" => "0001110",
+        "A-1" => "0110010",
         "D+A" => "0000010",
         "D-A" => "0010011",
         "A-D" => "0000111",
