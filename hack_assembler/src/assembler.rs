@@ -34,18 +34,7 @@ fn assemble(program_path: &str) {
         .collect();
     let commands: Vec<Command> = lines.iter().map(|l| parse_command(&l)).collect();
 
-    let mut symbol_table = create_symble_table();
-
-    let mut current_line_num = 0;
-    for command in &commands {
-        match command {
-            Command::Loop(v) => {
-                symbol_table.insert(&v, current_line_num);
-            }
-            Command::Comment(_) => (),
-            Command::Argument(_) | Command::Control(_) => current_line_num += 1,
-        }
-    }
+    let mut symbol_table = create_symble_table(&commands);
 
     let mut current_symbol_address = 15;
     for command in &commands {
@@ -83,8 +72,25 @@ fn parse_command<'a>(line: &'a str) -> Command {
     }
 }
 
-fn create_symble_table() -> HashMap<&'static str, u16> {
+fn create_symble_table<'a>(commands: &'a Vec<Command>) -> HashMap<&'a str, u16> {
     let mut symbol_table: HashMap<&str, u16> = HashMap::new();
+
+    symbol_table = add_buildin_symbols(symbol_table);
+
+    let mut current_line_num = 0;
+    for command in commands {
+        match command {
+            Command::Loop(v) => {
+                symbol_table.insert(&v, current_line_num);
+            }
+            Command::Comment(_) => (),
+            Command::Argument(_) | Command::Control(_) => current_line_num += 1,
+        }
+    }
+    symbol_table
+}
+
+fn add_buildin_symbols(mut symbol_table: HashMap<&str, u16>) -> HashMap<&str, u16> {
     symbol_table.insert("SP", 0);
     symbol_table.insert("LCL", 1);
     symbol_table.insert("ARG", 2);
