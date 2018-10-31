@@ -48,10 +48,9 @@ fn assemble(program_path: &str) {
 
     let mut current_symbol_address = 15;
     for line in &lines {
-        let asm_line = match &line {
-            v if v.starts_with("//") => None,
-            v if v.starts_with("@") => {
-                let symbol_name = &v[1..];
+        let command = parse_command(line);
+        let asm_line = match command {
+            Command::Argument(symbol_name) => {
                 if !symbol_table.contains_key(symbol_name) {
                     symbol_table.insert(symbol_name, current_symbol_address);
                     current_symbol_address += 1;
@@ -61,15 +60,14 @@ fn assemble(program_path: &str) {
                     parse_a_command(symbol_name, &symbol_table)
                 ))
             }
-            v if v.starts_with("(") && v.ends_with(")") => None,
-            v if v.is_empty() => None,
-            v => Some(parse_c_command(v)),
+            Command::Control(v) => Some(parse_c_command(v)),
+            Command::Loop(_) | Command::Comment(_) => None,
         };
         asm_line.map(|l| println!("{}", l));
     }
 }
 
-fn parse_command<'a> (line: &'a str) -> Command  {
+fn parse_command<'a>(line: &'a str) -> Command {
     match line {
         v if v.starts_with("//") => Command::Comment(&v),
         v if v.starts_with("@") => {
