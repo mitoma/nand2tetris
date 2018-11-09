@@ -8,6 +8,7 @@ use test_util::*;
 pub struct Screen {
     pub ram: Ram16kHiSpeed,
     pub window: PistonWindow,
+    screen_changed: bool,
     on_shift: bool,
     current_keycode: u16,
 }
@@ -23,12 +24,25 @@ impl Screen {
         Screen {
             ram: ram,
             window: window,
+            screen_changed: false,
             on_shift: false,
             current_keycode: 0,
         }
     }
 
+    pub fn ram(&mut self, a: [bool; 16], address: [bool; 14], load: bool) -> [bool; 16] {
+        if !self.screen_changed && load {
+            self.screen_changed = true;
+        }
+        self.ram.ram(a, address, load)
+    }
+
     pub fn draw(&mut self, e: &Event) {
+        if !self.screen_changed {
+            return;
+        }
+        self.screen_changed = false;
+
         if let Some(_) = e.render_args() {
             let ram = &mut self.ram;
             let mut canvas = ImageBuffer::new(512, 256);
@@ -101,6 +115,7 @@ impl Screen {
                 self.current_keycode = 0;
             }
         }
+        self.ram.rams[0x2000] = self.current_keycode;
     }
 
     fn is_shift(&mut self, key: Button) -> bool {
