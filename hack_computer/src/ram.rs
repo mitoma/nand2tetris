@@ -311,5 +311,4 @@ mod tests {
             assert_eq!(ZERO, sut.ram(ZERO, address, false));
         }
     }
-
 }

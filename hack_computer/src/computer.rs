@@ -80,7 +80,7 @@ impl Computer {
         println!("in_memory:1---2---3---4---, instruction:CxxAC-----D--J--",);
         println!(
             "address_memory:{:016b}",
-            b152u(self.pre_cpu_result.address_memory) ,
+            b152u(self.pre_cpu_result.address_memory),
         );
         println!(
             "in_memory:{:016b}, instruction:{:016b}, pc:{:04?}\nd_register:{:016b}, a_register:{:016b}",

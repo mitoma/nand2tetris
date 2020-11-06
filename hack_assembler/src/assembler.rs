@@ -15,10 +15,7 @@ fn main() {
     match program_path {
         Some(path) => assemble(path),
         None => {
-            println!(
-                "{}",
-                "hack バイナリのパスを指定してください"
-            );
+            println!("{}", "hack バイナリのパスを指定してください");
             std::process::exit(0)
         }
     }
@@ -34,7 +31,8 @@ fn assemble(program_path: &str) {
         .map(|l| match l.find("//") {
             Some(v) => l[0..v].to_string(),
             None => l,
-        }).map(|l| l.trim().to_owned())
+        })
+        .map(|l| l.trim().to_owned())
         .collect();
 
     let commands: Vec<Command> = lines.iter().map(|l| parse_command(&l)).collect();

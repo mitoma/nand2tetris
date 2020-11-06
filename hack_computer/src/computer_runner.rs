@@ -31,10 +31,7 @@ fn main() {
             match program_path {
                 Some(path) => computer.load_rom(path),
                 None => {
-                    println!(
-                        "{}",
-                        "hack バイナリのパスを指定してください"
-                    );
+                    println!("{}", "hack バイナリのパスを指定してください");
                     std::process::exit(0)
                 }
             }
