@@ -75,7 +75,7 @@ impl Computer {
         let a_register_current_value = self.cpu.a_register.register(ZERO, false);
         let d_register_current_value = self.cpu.d_register.register(ZERO, false);
 
-        println!("");
+        println!();
         println!("--------------------------------------------------------");
         println!("in_memory:1---2---3---4---, instruction:CxxAC-----D--J--",);
         println!(

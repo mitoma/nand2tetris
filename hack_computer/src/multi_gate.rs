@@ -95,6 +95,7 @@ pub fn mux4(a: bool, b: bool, c: bool, d: bool, sel: [bool; 2]) -> bool {
     mux(mux(a, b, sel[1]), mux(c, d, sel[1]), sel[0])
 }
 
+#[allow(clippy::many_single_char_names)]
 pub fn mux8(
     a: bool,
     b: bool,
@@ -140,6 +141,7 @@ pub fn mux4way16(
     ]
 }
 
+#[allow(clippy::many_single_char_names)]
 pub fn mux8way16(
     a: [bool; 16],
     b: [bool; 16],

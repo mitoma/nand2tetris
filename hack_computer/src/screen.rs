@@ -22,8 +22,8 @@ impl Screen {
             .unwrap();
 
         Screen {
-            ram: ram,
-            window: window,
+            ram,
+            window,
             screen_changed: false,
             on_shift: false,
             current_keycode: 0,
