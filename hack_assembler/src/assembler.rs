@@ -15,7 +15,7 @@ fn main() {
     match program_path {
         Some(path) => assemble(path),
         None => {
-            println!("{}", "hack バイナリのパスを指定してください");
+            println!("hack バイナリのパスを指定してください");
             std::process::exit(0)
         }
     }
