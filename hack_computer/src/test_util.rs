@@ -66,7 +66,7 @@ pub fn u2b15(a: u16) -> [bool; 15] {
     target
 }
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 pub fn bool_array_to_u16(a: [bool; 16]) -> u16 {
       (if a[0]  { 1 << 0  } else { 0 })
     + (if a[1]  { 1 << 1  } else { 0 })
@@ -90,7 +90,7 @@ pub fn b2u(a: [bool; 16]) -> u16 {
     bool_array_to_u16(a)
 }
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 pub fn b142u(a: [bool; 14]) -> u16 {
       (if a[0]  { 1 << 0  } else { 0 })
     + (if a[1]  { 1 << 1  } else { 0 })
@@ -108,7 +108,7 @@ pub fn b142u(a: [bool; 14]) -> u16 {
     + (if a[13] { 1 << 13 } else { 0 })
 }
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 pub fn b152u(a: [bool; 15]) -> u16 {
       (if a[0]  { 1 << 0  } else { 0 })
     + (if a[1]  { 1 << 1  } else { 0 })

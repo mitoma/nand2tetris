@@ -75,12 +75,12 @@ impl Computer {
         let a_register_current_value = self.cpu.a_register.register(ZERO, false);
         let d_register_current_value = self.cpu.d_register.register(ZERO, false);
 
-        println!("");
+        println!();
         println!("--------------------------------------------------------");
         println!("in_memory:1---2---3---4---, instruction:CxxAC-----D--J--",);
         println!(
             "address_memory:{:016b}",
-            b152u(self.pre_cpu_result.address_memory) ,
+            b152u(self.pre_cpu_result.address_memory),
         );
         println!(
             "in_memory:{:016b}, instruction:{:016b}, pc:{:04?}\nd_register:{:016b}, a_register:{:016b}",

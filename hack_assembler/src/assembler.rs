@@ -15,10 +15,7 @@ fn main() {
     match program_path {
         Some(path) => assemble(path),
         None => {
-            println!(
-                "{}",
-                "hack バイナリのパスを指定してください"
-            );
+            println!("hack バイナリのパスを指定してください");
             std::process::exit(0)
         }
     }
@@ -34,7 +31,8 @@ fn assemble(program_path: &str) {
         .map(|l| match l.find("//") {
             Some(v) => l[0..v].to_string(),
             None => l,
-        }).map(|l| l.trim().to_owned())
+        })
+        .map(|l| l.trim().to_owned())
         .collect();
 
     let commands: Vec<Command> = lines.iter().map(|l| parse_command(&l)).collect();
@@ -61,18 +59,20 @@ fn assemble(program_path: &str) {
             Command::Control(v) => Some(parse_c_command(v)),
             Command::Loop(_) | Command::Comment(_) => None,
         };
-        asm_line.map(|l| println!("{}", l));
+        if let Some(line) = asm_line {
+            println!("{}", line);
+        }
     }
 }
 
-fn parse_command<'a>(line: &'a str) -> Command {
+fn parse_command(line: &str) -> Command {
     match line {
         v if v.starts_with("//") => Command::Comment(&v),
-        v if v.starts_with("@") => {
+        v if v.starts_with('@') => {
             let symbol_name = &v[1..];
             Command::Argument(symbol_name)
         }
-        v if v.starts_with("(") && v.ends_with(")") => {
+        v if v.starts_with('(') && v.ends_with(')') => {
             let symbol_name = v.trim_matches(&['(', ')'] as &[_]);
             Command::Loop(symbol_name)
         }
@@ -81,7 +81,7 @@ fn parse_command<'a>(line: &'a str) -> Command {
     }
 }
 
-fn create_symble_table<'a>(commands: &'a Vec<Command>) -> HashMap<&'a str, u16> {
+fn create_symble_table<'a>(commands: &'a [Command]) -> HashMap<&'a str, u16> {
     let mut symbol_table: HashMap<&str, u16> = HashMap::new();
 
     symbol_table = add_buildin_symbols(symbol_table);
@@ -156,11 +156,11 @@ fn parse_c_command(command: &str) -> String {
         v if v.ends_with(";JMP") => "111",
         _ => "000",
     };
-    let command = match command.find("=") {
+    let command = match command.find('=') {
         Some(v) => command.split_at(v + 1).1,
         _ => &command,
     };
-    let command = match command.find(";") {
+    let command = match command.find(';') {
         Some(v) => command.split_at(v).0,
         _ => command,
     };

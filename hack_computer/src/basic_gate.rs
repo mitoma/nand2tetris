@@ -87,5 +87,4 @@ mod tests {
         assert_eq!([true, false], dmux(true, false));
         assert_eq!([false, true], dmux(true, true));
     }
-
 }
