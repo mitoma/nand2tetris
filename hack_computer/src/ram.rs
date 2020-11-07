@@ -6,22 +6,24 @@ pub struct Ram8 {
     pub registers: [Register; 8],
 }
 
-impl Ram8 {
-    pub fn new() -> Ram8 {
+impl Default for Ram8 {
+    fn default() -> Self {
         Ram8 {
             registers: [
-                Register::new(),
-                Register::new(),
-                Register::new(),
-                Register::new(),
-                Register::new(),
-                Register::new(),
-                Register::new(),
-                Register::new(),
+                Register::default(),
+                Register::default(),
+                Register::default(),
+                Register::default(),
+                Register::default(),
+                Register::default(),
+                Register::default(),
+                Register::default(),
             ],
         }
     }
+}
 
+impl Ram8 {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 3], load: bool) -> [bool; 16] {
         let sel = dmux8way(load, address);
         mux8way16(
@@ -42,22 +44,24 @@ pub struct Ram64 {
     pub rams: [Ram8; 8],
 }
 
-impl Ram64 {
-    pub fn new() -> Ram64 {
+impl Default for Ram64 {
+    fn default() -> Self {
         Ram64 {
             rams: [
-                Ram8::new(),
-                Ram8::new(),
-                Ram8::new(),
-                Ram8::new(),
-                Ram8::new(),
-                Ram8::new(),
-                Ram8::new(),
-                Ram8::new(),
+                Ram8::default(),
+                Ram8::default(),
+                Ram8::default(),
+                Ram8::default(),
+                Ram8::default(),
+                Ram8::default(),
+                Ram8::default(),
+                Ram8::default(),
             ],
         }
     }
+}
 
+impl Ram64 {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 6], load: bool) -> [bool; 16] {
         let upper = [address[0], address[1], address[2]];
         let lower = [address[3], address[4], address[5]];
@@ -81,22 +85,24 @@ pub struct Ram512 {
     pub rams: [Ram64; 8],
 }
 
-impl Ram512 {
-    pub fn new() -> Ram512 {
+impl Default for Ram512 {
+    fn default() -> Self {
         Ram512 {
             rams: [
-                Ram64::new(),
-                Ram64::new(),
-                Ram64::new(),
-                Ram64::new(),
-                Ram64::new(),
-                Ram64::new(),
-                Ram64::new(),
-                Ram64::new(),
+                Ram64::default(),
+                Ram64::default(),
+                Ram64::default(),
+                Ram64::default(),
+                Ram64::default(),
+                Ram64::default(),
+                Ram64::default(),
+                Ram64::default(),
             ],
         }
     }
+}
 
+impl Ram512 {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 9], load: bool) -> [bool; 16] {
         let upper = [address[0], address[1], address[2]];
         let lower = [
@@ -122,22 +128,24 @@ pub struct Ram4k {
     pub rams: [Ram512; 8],
 }
 
-impl Ram4k {
-    pub fn new() -> Ram4k {
+impl Default for Ram4k {
+    fn default() -> Self {
         Ram4k {
             rams: [
-                Ram512::new(),
-                Ram512::new(),
-                Ram512::new(),
-                Ram512::new(),
-                Ram512::new(),
-                Ram512::new(),
-                Ram512::new(),
-                Ram512::new(),
+                Ram512::default(),
+                Ram512::default(),
+                Ram512::default(),
+                Ram512::default(),
+                Ram512::default(),
+                Ram512::default(),
+                Ram512::default(),
+                Ram512::default(),
             ],
         }
     }
+}
 
+impl Ram4k {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 12], load: bool) -> [bool; 16] {
         let upper = [address[0], address[1], address[2]];
         let lower = [
@@ -172,13 +180,15 @@ pub struct Ram16kHiSpeed {
     pub rams: [u16; 1024 * 16],
 }
 
-impl Ram16kHiSpeed {
-    pub fn new() -> Ram16kHiSpeed {
-        Ram16kHiSpeed {
+impl Default for Ram16kHiSpeed {
+    fn default() -> Self {
+        Self {
             rams: [0; 1024 * 16],
         }
     }
+}
 
+impl Ram16kHiSpeed {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 14], load: bool) -> [bool; 16] {
         let address = b142u(address) as usize;
         let result = u2b(self.rams[address]);
@@ -194,13 +204,20 @@ pub struct Ram16k {
     pub rams: [Ram4k; 4],
 }
 
-impl Ram16k {
-    pub fn new() -> Ram16k {
+impl Default for Ram16k {
+    fn default() -> Self {
         Ram16k {
-            rams: [Ram4k::new(), Ram4k::new(), Ram4k::new(), Ram4k::new()],
+            rams: [
+                Ram4k::default(),
+                Ram4k::default(),
+                Ram4k::default(),
+                Ram4k::default(),
+            ],
         }
     }
+}
 
+impl Ram16k {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 14], load: bool) -> [bool; 16] {
         let upper = [address[0], address[1]];
         let lower = [
@@ -234,13 +251,15 @@ pub struct Ram32kHiSpeed {
     pub rams: [u16; 1024 * 32],
 }
 
-impl Ram32kHiSpeed {
-    pub fn new() -> Ram32kHiSpeed {
-        Ram32kHiSpeed {
+impl Default for Ram32kHiSpeed {
+    fn default() -> Self {
+        Self {
             rams: [0; 1024 * 32],
         }
     }
+}
 
+impl Ram32kHiSpeed {
     pub fn ram(&mut self, a: [bool; 16], address: [bool; 15], load: bool) -> [bool; 16] {
         let address = b152u(address) as usize;
         let result = u2b(self.rams[address]);
@@ -259,7 +278,7 @@ mod tests {
 
     #[test]
     fn test_ram8() {
-        let mut sut = Ram8::new();
+        let mut sut = Ram8::default();
 
         for i in 0_u16..7_u16 {
             let t = u2b(i);
@@ -276,7 +295,7 @@ mod tests {
     #[test]
     #[ignore]
     fn test_ram16k() {
-        let mut sut = Ram16k::new();
+        let mut sut = Ram16k::default();
 
         for i in 0_u16..128_u16 {
             let t = u2b(i);
@@ -295,7 +314,7 @@ mod tests {
 
     #[test]
     fn test_ram16k_hi_speed() {
-        let mut sut = Ram16kHiSpeed::new();
+        let mut sut = Ram16kHiSpeed::default();
 
         for i in 0_u16..128_u16 {
             let t = u2b(i);

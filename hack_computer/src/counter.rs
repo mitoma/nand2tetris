@@ -7,13 +7,15 @@ pub struct Counter {
     register: Register,
 }
 
-impl Counter {
-    pub fn new() -> Counter {
+impl Default for Counter {
+    fn default() -> Self {
         Counter {
-            register: Register::new(),
+            register: Register::default(),
         }
     }
+}
 
+impl Counter {
     pub fn count(&mut self, a: [bool; 16], inc: bool, load: bool, reset: bool) -> [bool; 16] {
         // feedbackループの都合でregisterを二回呼び出している
         let current_value = self.register.register(ZERO, false);
@@ -40,7 +42,7 @@ mod tests {
 
     #[test]
     fn test_counter() {
-        let mut sut = Counter::new();
+        let mut sut = Counter::default();
         let in_value = u2b(527);
 
         sut.count(u2b(47), false, true, false);

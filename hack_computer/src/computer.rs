@@ -16,13 +16,13 @@ pub struct Computer {
     pub pre_cpu_result: CpuResult,
 }
 
-impl Computer {
-    pub fn new() -> Computer {
+impl Default for Computer {
+    fn default() -> Self {
         Computer {
-            rom: Ram32kHiSpeed::new(),
-            ram: Ram16kHiSpeed::new(),
-            screen: Screen::new(Ram16kHiSpeed::new()),
-            cpu: Cpu::new(),
+            rom: Ram32kHiSpeed::default(),
+            ram: Ram16kHiSpeed::default(),
+            screen: Screen::new(Ram16kHiSpeed::default()),
+            cpu: Cpu::default(),
             pre_cpu_result: CpuResult {
                 out_memory: [false; 16],
                 write_memory: false,
@@ -31,7 +31,9 @@ impl Computer {
             },
         }
     }
+}
 
+impl Computer {
     pub fn load_rom(&mut self, program_path: String) {
         let f = fs::File::open(program_path).unwrap();
         let reader = BufReader::new(f);

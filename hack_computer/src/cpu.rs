@@ -18,15 +18,17 @@ pub struct CpuResult {
     pub pc: [bool; 15],
 }
 
-impl Cpu {
-    pub fn new() -> Cpu {
+impl Default for Cpu {
+    fn default() -> Self {
         Cpu {
-            a_register: Register::new(),
-            d_register: Register::new(),
-            pc: Counter::new(),
+            a_register: Register::default(),
+            d_register: Register::default(),
+            pc: Counter::default(),
         }
     }
+}
 
+impl Cpu {
     pub fn cycle(
         &mut self,
         in_memory: [bool; 16],
@@ -136,7 +138,7 @@ mod tests {
 
     #[test]
     fn test_cpu() {
-        let mut cpu = Cpu::new();
+        let mut cpu = Cpu::default();
 
         let f = fs::File::open("test/CPU.cmp").unwrap();
         let reader = BufReader::new(f);

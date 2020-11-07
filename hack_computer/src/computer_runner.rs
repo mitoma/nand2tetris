@@ -15,23 +15,23 @@ fn main() {
             let program_path = env::args().nth(1);
             let max_cycle_count = env::args()
                 .nth(2)
-                .ok_or("max_cycle_count is none.".to_owned())
+                .ok_or_else(|| "max_cycle_count is none.".to_owned())
                 .and_then(|v| {
                     v.parse::<u32>()
                         .map_err(|_err| "please input number".to_owned())
                 });
             let sleep_ms = env::args()
                 .nth(3)
-                .ok_or("sleep_ms is none.".to_owned())
+                .ok_or_else(|| "sleep_ms is none.".to_owned())
                 .and_then(|v| {
                     v.parse::<u64>()
                         .map_err(|_err| "please input number".to_owned())
                 });
-            let mut computer = Computer::new();
+            let mut computer = Computer::default();
             match program_path {
                 Some(path) => computer.load_rom(path),
                 None => {
-                    println!("{}", "hack バイナリのパスを指定してください");
+                    println!("hack バイナリのパスを指定してください");
                     std::process::exit(0)
                 }
             }
@@ -45,9 +45,8 @@ fn main() {
                     Ok(value) if counter > value => std::process::exit(0),
                     _ => {}
                 }
-                match sleep_ms {
-                    Ok(value) => thread::sleep(Duration::from_millis(value)),
-                    _ => {}
+                if let Ok(value) = sleep_ms {
+                    thread::sleep(Duration::from_millis(value))
                 }
             }
         })
