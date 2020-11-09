@@ -22,13 +22,15 @@ pub struct Bit {
     pub dff: Dff,
 }
 
-impl Bit {
-    pub fn new() -> Bit {
+impl Default for Bit {
+    fn default() -> Self {
         Bit {
             dff: Dff::new(false),
         }
     }
+}
 
+impl Bit {
     pub fn bit(&mut self, a: bool, load: bool) -> bool {
         let v = mux(self.dff.pre_value, a, load);
         self.dff.dff(v)
@@ -39,30 +41,32 @@ pub struct Register {
     pub bits: [Bit; 16],
 }
 
-impl Register {
-    pub fn new() -> Register {
+impl Default for Register {
+    fn default() -> Self {
         Register {
             bits: [
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
-                Bit::new(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
+                Bit::default(),
             ],
         }
     }
+}
 
+impl Register {
     pub fn register(&mut self, a: [bool; 16], load: bool) -> [bool; 16] {
         [
             self.bits[0].bit(a[0], load),
@@ -105,7 +109,7 @@ mod tests {
 
     #[test]
     fn test_bit() {
-        let mut bit = Bit::new();
+        let mut bit = Bit::default();
         assert_eq!(false, bit.bit(true, false));
         assert_eq!(false, bit.bit(true, true)); // set true
         assert_eq!(true, bit.bit(false, false));
@@ -118,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_register() {
-        let mut register = Register::new();
+        let mut register = Register::default();
 
         let f = fs::File::open("test/Register.cmp").unwrap();
         let reader = BufReader::new(f);

@@ -43,7 +43,7 @@ impl Screen {
         }
         self.screen_changed = false;
 
-        if let Some(_) = e.render_args() {
+        if e.render_args().is_some() {
             let ram = &mut self.ram;
             let mut canvas = ImageBuffer::new(512, 256);
 

@@ -13,7 +13,7 @@ fn main() {
     let thread = builder.stack_size(10000000);
     let handle = thread
         .spawn(|| {
-            let ram = Ram16kHiSpeed::new();
+            let ram = Ram16kHiSpeed::default();
 
             // ram = draw_data(ram);
 
@@ -28,8 +28,8 @@ fn main() {
 }
 
 // 画面へのデータ出力のテスト
-#[allow(dead_code)]
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[allow(dead_code, clippy::identity_op)]
+#[rustfmt::skip]
 fn draw_data(mut ram: Ram16kHiSpeed) -> Ram16kHiSpeed {
     for i in 0..16 {
         // draw A
@@ -114,5 +114,5 @@ fn draw_data(mut ram: Ram16kHiSpeed) -> Ram16kHiSpeed {
             true,
         );
     }
-    return ram;
+    ram
 }

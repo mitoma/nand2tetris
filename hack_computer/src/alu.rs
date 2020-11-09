@@ -3,6 +3,7 @@ use basic_gate::*;
 use const_value;
 use multi_gate::*;
 
+#[allow(clippy::too_many_arguments)]
 pub fn alu(
     x: [bool; 16],
     y: [bool; 16],
