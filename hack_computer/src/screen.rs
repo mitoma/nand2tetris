@@ -45,7 +45,7 @@ impl Screen {
 
         if e.render_args().is_some() {
             let ram = &mut self.ram;
-            let mut canvas:ImageBuffer<Rgba<u8>, Vec<u8>>   = ImageBuffer::new(512, 256);
+            let mut canvas: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(512, 256);
 
             // for debug
             let mut counter: u32 = 0;
@@ -90,9 +90,12 @@ impl Screen {
                 }
             }
             */
-            let texture: G2dTexture =
-                Texture::from_image(&mut self.window.create_texture_context(), &canvas, &TextureSettings::new())
-                    .unwrap();
+            let texture: G2dTexture = Texture::from_image(
+                &mut self.window.create_texture_context(),
+                &canvas,
+                &TextureSettings::new(),
+            )
+            .unwrap();
             self.window.draw_2d(e, |c, g, _| {
                 image(&texture, c.transform, g);
             });
