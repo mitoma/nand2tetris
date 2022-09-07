@@ -3,16 +3,9 @@ use const_value::*;
 use flip_flap::*;
 use multi_gate::*;
 
+#[derive(Default)]
 pub struct Counter {
     register: Register,
-}
-
-impl Default for Counter {
-    fn default() -> Self {
-        Counter {
-            register: Register::default(),
-        }
-    }
 }
 
 impl Counter {

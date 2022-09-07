@@ -5,6 +5,7 @@ use counter::*;
 use flip_flap::*;
 use multi_gate::*;
 
+#[derive(Default)]
 pub struct Cpu {
     pub a_register: Register,
     pub d_register: Register,
@@ -16,16 +17,6 @@ pub struct CpuResult {
     pub write_memory: bool,
     pub address_memory: [bool; 15],
     pub pc: [bool; 15],
-}
-
-impl Default for Cpu {
-    fn default() -> Self {
-        Cpu {
-            a_register: Register::default(),
-            d_register: Register::default(),
-            pc: Counter::default(),
-        }
-    }
 }
 
 impl Cpu {

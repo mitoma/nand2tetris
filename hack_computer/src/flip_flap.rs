@@ -37,33 +37,9 @@ impl Bit {
     }
 }
 
+#[derive(Default)]
 pub struct Register {
     pub bits: [Bit; 16],
-}
-
-impl Default for Register {
-    fn default() -> Self {
-        Register {
-            bits: [
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-            ],
-        }
-    }
 }
 
 impl Register {
