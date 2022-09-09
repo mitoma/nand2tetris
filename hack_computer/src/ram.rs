@@ -1,6 +1,6 @@
-use flip_flap::*;
-use multi_gate::*;
-use test_util::*;
+use crate::flip_flap::*;
+use crate::multi_gate::*;
+use crate::test_util::*;
 
 #[derive(Default)]
 pub struct Ram8 {
@@ -198,7 +198,7 @@ impl Ram32kHiSpeed {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use const_value::*;
+    use crate::const_value::*;
 
     #[test]
     fn test_ram8() {

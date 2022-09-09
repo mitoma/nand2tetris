@@ -1,8 +1,7 @@
+use crate::ram::*;
+use crate::test_util::*;
 use image::*;
 use minifb::{Window, WindowOptions};
-
-use ram::*;
-use test_util::*;
 
 pub struct Screen {
     pub ram: Ram16kHiSpeed,

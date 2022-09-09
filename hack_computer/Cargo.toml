@@ -2,6 +2,7 @@
 name = "hack_computer"
 version = "0.1.0"
 authors = ["mitoma <mutetheradio@gmail.com>"]
+edition = "2021"
 
 [[bin]]
 name = "screen_runner"
@@ -14,3 +15,5 @@ path = "src/computer_runner.rs"
 [dependencies]
 minifb = "0.23"
 image = "0.24"
+log = "0.4"
+env_logger = "0.9"

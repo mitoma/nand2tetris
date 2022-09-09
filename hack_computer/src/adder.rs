@@ -1,5 +1,5 @@
-use basic_gate::*;
-use const_value;
+use crate::basic_gate::*;
+use crate::const_value;
 
 pub fn half_adder(a: bool, b: bool) -> [bool; 2] {
     [and(a, b), xor(a, b)]
@@ -42,7 +42,7 @@ pub fn inc16(a: [bool; 16]) -> [bool; 16] {
 mod tests {
 
     use super::*;
-    use test_util::*;
+    use crate::test_util::*;
 
     #[test]
     fn half_adder_test() {

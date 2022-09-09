@@ -1,12 +1,12 @@
-use basic_gate::*;
-use const_value::*;
-use cpu::{Cpu, CpuResult};
-use multi_gate::*;
-use ram::{Ram16kHiSpeed, Ram32kHiSpeed};
-use screen::Screen;
+use crate::basic_gate::*;
+use crate::const_value::*;
+use crate::cpu::{Cpu, CpuResult};
+use crate::multi_gate::*;
+use crate::ram::{Ram16kHiSpeed, Ram32kHiSpeed};
+use crate::screen::Screen;
+use crate::test_util::*;
 use std::fs;
 use std::io::{BufRead, BufReader};
-use test_util::*;
 
 pub struct Computer {
     pub rom: Ram32kHiSpeed,

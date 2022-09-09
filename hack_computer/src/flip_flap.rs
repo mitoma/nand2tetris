@@ -1,4 +1,4 @@
-use basic_gate::*;
+use crate::basic_gate::*;
 
 pub struct Dff {
     pub pre_value: bool,
@@ -68,9 +68,9 @@ impl Register {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_util::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
-    use test_util::*;
 
     #[test]
     fn test_dff() {

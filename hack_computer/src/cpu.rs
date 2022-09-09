@@ -1,9 +1,9 @@
-use alu::*;
-use basic_gate::*;
-use const_value::*;
-use counter::*;
-use flip_flap::*;
-use multi_gate::*;
+use crate::alu::*;
+use crate::basic_gate::*;
+use crate::const_value::*;
+use crate::counter::*;
+use crate::flip_flap::*;
+use crate::multi_gate::*;
 
 #[derive(Default)]
 pub struct Cpu {
@@ -123,9 +123,9 @@ impl Cpu {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_util::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
-    use test_util::*;
 
     #[test]
     fn test_cpu() {

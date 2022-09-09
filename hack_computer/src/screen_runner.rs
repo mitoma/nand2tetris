@@ -3,6 +3,7 @@ extern crate hack_computer;
 use hack_computer::ram::*;
 use hack_computer::screen::*;
 use hack_computer::test_util::*;
+use minifb::Key;
 
 fn main() {
     let mut ram = Ram16kHiSpeed::default();
@@ -10,7 +11,7 @@ fn main() {
     ram = draw_data(ram);
 
     let mut screen = Screen::new(ram);
-    while screen.window.is_open() {
+    while screen.window.is_open() || screen.window.is_key_down(Key::Escape) {
         screen.draw();
         //screen.key();
     }

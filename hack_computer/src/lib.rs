@@ -1,6 +1,3 @@
-extern crate image;
-extern crate minifb;
-
 pub mod adder;
 pub mod alu;
 pub mod basic_gate;
