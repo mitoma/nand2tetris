@@ -1,6 +1,5 @@
 extern crate image;
-extern crate piston;
-extern crate piston_window;
+extern crate minifb;
 
 pub mod adder;
 pub mod alu;

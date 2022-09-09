@@ -4,27 +4,16 @@ use hack_computer::ram::*;
 use hack_computer::screen::*;
 use hack_computer::test_util::*;
 
-use std::thread;
-
 fn main() {
-    // main thread の stack サイズの都合で thread を新たに作っている
-    // https://qiita.com/szktty/items/8a6e26f4b829d3689fce
-    let builder = thread::Builder::new();
-    let thread = builder.stack_size(10000000);
-    let handle = thread
-        .spawn(|| {
-            let ram = Ram16kHiSpeed::default();
+    let mut ram = Ram16kHiSpeed::default();
 
-            // ram = draw_data(ram);
+    ram = draw_data(ram);
 
-            let mut screen = Screen::new(ram);
-            while let Some(e) = screen.window.next() {
-                screen.draw(&e);
-                screen.key(&e);
-            }
-        })
-        .unwrap();
-    let _ = handle.join();
+    let mut screen = Screen::new(ram);
+    while screen.window.is_open() {
+        screen.draw();
+        //screen.key();
+    }
 }
 
 // 画面へのデータ出力のテスト

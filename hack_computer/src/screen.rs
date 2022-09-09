@@ -1,26 +1,26 @@
 use image::*;
-use piston::window::WindowSettings;
-use piston_window::*;
+use minifb::{Window, WindowOptions};
 
 use ram::*;
 use test_util::*;
 
 pub struct Screen {
     pub ram: Ram16kHiSpeed,
-    pub window: PistonWindow,
+    pub window: Window,
     screen_changed: bool,
     on_shift: bool,
     current_keycode: u16,
 }
 
+const WIDTH: usize = 512;
+const HEIGHT: usize = 256;
+
 impl Screen {
     pub fn new(ram: Ram16kHiSpeed) -> Screen {
-        // Create an Glutin window.
-        let window: PistonWindow = WindowSettings::new("hack screen", [512, 256])
-            .exit_on_esc(true)
-            .build()
-            .unwrap();
-
+        let window = Window::new("Hack Screen", WIDTH, HEIGHT, WindowOptions::default())
+            .unwrap_or_else(|e| {
+                panic!("{}", e);
+            });
         Screen {
             ram,
             window,
@@ -37,71 +37,69 @@ impl Screen {
         self.ram.ram(a, address, load)
     }
 
-    pub fn draw(&mut self, e: &Event) {
+    pub fn draw(&mut self) {
         if !self.screen_changed {
             return;
         }
         self.screen_changed = false;
 
-        if e.render_args().is_some() {
-            let ram = &mut self.ram;
-            let mut canvas: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(512, 256);
+        let ram = &mut self.ram;
+        let mut canvas: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(512, 256);
 
-            // for debug
-            let mut counter: u32 = 0;
-            for i in 0..(1024 * 8) {
-                let value = ram.ram(u2b(0), u2b14(i), false);
-                for v in value.iter() {
-                    let color = if *v { [0, 255, 0, 255] } else { [0, 0, 0, 255] };
-                    let x = counter % 512;
-                    let y = counter / 512;
-                    canvas.put_pixel(x, y, Rgba(color));
-                    counter += 1;
-                }
+        // for debug
+        let mut counter: u32 = 0;
+        for i in 0..(1024 * 8) {
+            let value = ram.ram(u2b(0), u2b14(i), false);
+            for v in value.iter() {
+                let color = if *v { [0, 255, 0, 255] } else { [0, 0, 0, 255] };
+                let x = counter % 512;
+                let y = counter / 512;
+                canvas.put_pixel(x, y, Rgba(color));
+                counter += 1;
             }
+        }
 
-            // for naive
-            /*
-            {
-                let mut counter: u32 = 0;
-                for rams4k in ram.rams[0..2].iter() {
-                    for rams512 in rams4k.rams.iter() {
-                        for ram64 in rams512.rams.iter() {
-                            for ram8 in ram64.rams.iter() {
-                                for register in ram8.registers.iter() {
-                                    for bit in register.bits.iter() {
-                                        let zero_pos = if counter % 8 == 0 { 128 } else { 0 };
-                                        let four_pos = if counter % 8 == 4 { 128 } else { 0 };
+        let buffer: Vec<u32> = canvas
+            .chunks(4)
+            .map(|v| ((v[0] as u32) << 16) | ((v[1] as u32) << 8) | v[2] as u32)
+            .collect();
 
-                                        let color = if bit.dff.pre_value {
-                                            [zero_pos, 255, four_pos, 255]
-                                        } else {
-                                            [zero_pos, 0, four_pos, 255]
-                                        };
-                                        let x = counter % 512;
-                                        let y = counter / 512;
-                                        canvas.put_pixel(x, y, Rgba(color));
-                                        counter += 1;
-                                    }
+        self.window
+            .update_with_buffer(buffer.as_slice(), WIDTH, HEIGHT)
+            .unwrap();
+
+        // for naive
+        /*
+        {
+            let mut counter: u32 = 0;
+            for rams4k in ram.rams[0..2].iter() {
+                for rams512 in rams4k.rams.iter() {
+                    for ram64 in rams512.rams.iter() {
+                        for ram8 in ram64.rams.iter() {
+                            for register in ram8.registers.iter() {
+                                for bit in register.bits.iter() {
+                                    let zero_pos = if counter % 8 == 0 { 128 } else { 0 };
+                                    let four_pos = if counter % 8 == 4 { 128 } else { 0 };
+
+                                    let color = if bit.dff.pre_value {
+                                        [zero_pos, 255, four_pos, 255]
+                                    } else {
+                                        [zero_pos, 0, four_pos, 255]
+                                    };
+                                    let x = counter % 512;
+                                    let y = counter / 512;
+                                    canvas.put_pixel(x, y, Rgba(color));
+                                    counter += 1;
                                 }
                             }
                         }
                     }
                 }
             }
-            */
-            let texture: G2dTexture = Texture::from_image(
-                &mut self.window.create_texture_context(),
-                &canvas,
-                &TextureSettings::new(),
-            )
-            .unwrap();
-            self.window.draw_2d(e, |c, g, _| {
-                image(&texture, c.transform, g);
-            });
         }
+        */
     }
-
+    /*
     pub fn key(&mut self, e: &Event) {
         // http://docs.piston.rs/mush/piston/input/keyboard/enum.Key.html
         if let Some(key) = e.press_args() {
@@ -204,4 +202,5 @@ impl Screen {
             _ => 0,
         }
     }
+     */
 }

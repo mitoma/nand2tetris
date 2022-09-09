@@ -36,10 +36,10 @@ fn main() {
                 }
             }
             let mut counter = 0;
-            while let Some(e) = computer.screen.window.next() {
+            while computer.screen.window.is_open() {
                 computer.cycle(false);
-                computer.screen.draw(&e);
-                computer.screen.key(&e);
+                computer.screen.draw();
+                //computer.screen.key(&e);
                 counter += 1;
                 match max_cycle_count {
                     Ok(value) if counter > value => std::process::exit(0),
