@@ -38,6 +38,7 @@ impl Screen {
 
     pub fn draw(&mut self) {
         if !self.screen_changed {
+            self.window.update();
             return;
         }
         self.screen_changed = false;
@@ -50,7 +51,11 @@ impl Screen {
         for i in 0..(1024 * 8) {
             let value = ram.ram(u2b(0), u2b14(i), false);
             for v in value.iter() {
-                let color = if *v { [0, 255, 0, 255] } else { [0, 0, 0, 255] };
+                let color = if *v {
+                    [0, 100, 200, 100]
+                } else {
+                    [0, 0, 10, 0]
+                };
                 let x = counter % 512;
                 let y = counter / 512;
                 canvas.put_pixel(x, y, Rgba(color));
@@ -60,11 +65,17 @@ impl Screen {
 
         let buffer: Vec<u32> = canvas
             .chunks(4)
-            .map(|v| ((v[0] as u32) << 16) | ((v[1] as u32) << 8) | v[2] as u32)
+            .map(|v| {
+                let result = ((v[0] as u32) << 24)
+                    | ((v[1] as u32) << 16)
+                    | (v[2] as u32) << 8
+                    | v[3] as u32;
+                result
+            })
             .collect();
 
         self.window
-            .update_with_buffer(buffer.as_slice(), WIDTH, HEIGHT)
+            .update_with_buffer(&buffer, WIDTH, HEIGHT)
             .unwrap();
 
         // for naive

@@ -6,12 +6,19 @@ use hack_computer::test_util::*;
 use minifb::Key;
 
 fn main() {
+    std::env::set_var("RUST_LOG", "debug");
+    env_logger::init();
     let mut ram = Ram16kHiSpeed::default();
 
     ram = draw_data(ram);
 
     let mut screen = Screen::new(ram);
-    while screen.window.is_open() || screen.window.is_key_down(Key::Escape) {
+    screen.ram(
+        u2b(0b_1000_0100_0010_0001_u16),
+        u2b14(0b_0000_0000_0000_0000_u16 + 50),
+        true,
+    );
+    while screen.window.is_open() && !screen.window.is_key_down(Key::Escape) {
         screen.draw();
         //screen.key();
     }
@@ -21,7 +28,7 @@ fn main() {
 #[allow(dead_code, clippy::identity_op)]
 #[rustfmt::skip]
 fn draw_data(mut ram: Ram16kHiSpeed) -> Ram16kHiSpeed {
-    for i in 0..16 {
+    for i in 0..32 {
         // draw A
         ram.ram(
             u2b(0b_1111_0001_1000_1111_u16),
