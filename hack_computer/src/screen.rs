@@ -1,14 +1,13 @@
 use crate::ram::*;
 use crate::test_util::*;
 use image::*;
+use minifb::Key;
 use minifb::{Window, WindowOptions};
 
 pub struct Screen {
     pub ram: Ram16kHiSpeed,
     pub window: Window,
     screen_changed: bool,
-    on_shift: bool,
-    current_keycode: u16,
 }
 
 const WIDTH: usize = 512;
@@ -24,8 +23,6 @@ impl Screen {
             ram,
             window,
             screen_changed: false,
-            on_shift: false,
-            current_keycode: 0,
         }
     }
 
@@ -109,108 +106,98 @@ impl Screen {
         }
         */
     }
-    /*
-    pub fn key(&mut self, e: &Event) {
-        // http://docs.piston.rs/mush/piston/input/keyboard/enum.Key.html
-        if let Some(key) = e.press_args() {
-            if self.is_shift(key) {
-                self.on_shift = true;
-            } else {
-                self.current_keycode = self.key_to_code(key);
-            }
-        }
-        if let Some(key) = e.release_args() {
-            if self.is_shift(key) {
-                self.on_shift = false;
-            } else {
-                self.current_keycode = 0;
-            }
-        }
-        self.ram.rams[0x2000] = self.current_keycode;
+
+    pub fn key(&mut self) {
+        let current_keys = self.window.get_keys();
+        let keycode = if current_keys.is_empty() {
+            0
+        } else {
+            let on_shift = current_keys.iter().any(|key| Self::is_shift(key));
+            let key = current_keys.iter().find(|key| !Self::is_shift(key));
+            key.map(|key| Self::key_to_code(key, on_shift)).unwrap_or(0)
+        };
+        self.ram.rams[0x2000] = keycode;
     }
 
-    fn is_shift(&mut self, key: Button) -> bool {
+    fn is_shift(key: &Key) -> bool {
         match key {
-            Button::Keyboard(keyboard::Key::LShift) | Button::Keyboard(keyboard::Key::RShift) => {
-                true
-            }
+            Key::LeftShift | Key::RightShift => true,
             _ => false,
         }
     }
 
-    fn key_to_code(&mut self, key: Button) -> u16 {
-        let shift_value = if self.on_shift { 32 } else { 0 };
+    fn key_to_code(key: &Key, on_shift: bool) -> u16 {
+        let shift_value = if on_shift { 32 } else { 0 };
 
         match key {
             // num
-            Button::Keyboard(keyboard::Key::D0) => 48,
-            Button::Keyboard(keyboard::Key::D1) => 49,
-            Button::Keyboard(keyboard::Key::D2) => 50,
-            Button::Keyboard(keyboard::Key::D3) => 51,
-            Button::Keyboard(keyboard::Key::D4) => 52,
-            Button::Keyboard(keyboard::Key::D5) => 53,
-            Button::Keyboard(keyboard::Key::D6) => 54,
-            Button::Keyboard(keyboard::Key::D7) => 55,
-            Button::Keyboard(keyboard::Key::D8) => 56,
-            Button::Keyboard(keyboard::Key::D9) => 57,
+            Key::Key0 => 48,
+            Key::Key1 => 49,
+            Key::Key2 => 50,
+            Key::Key3 => 51,
+            Key::Key4 => 52,
+            Key::Key5 => 53,
+            Key::Key6 => 54,
+            Key::Key7 => 55,
+            Key::Key8 => 56,
+            Key::Key9 => 57,
 
             // alpha
-            Button::Keyboard(keyboard::Key::A) => 65 + shift_value,
-            Button::Keyboard(keyboard::Key::B) => 66 + shift_value,
-            Button::Keyboard(keyboard::Key::C) => 67 + shift_value,
-            Button::Keyboard(keyboard::Key::D) => 68 + shift_value,
-            Button::Keyboard(keyboard::Key::E) => 69 + shift_value,
-            Button::Keyboard(keyboard::Key::F) => 70 + shift_value,
-            Button::Keyboard(keyboard::Key::G) => 71 + shift_value,
-            Button::Keyboard(keyboard::Key::H) => 72 + shift_value,
-            Button::Keyboard(keyboard::Key::I) => 73 + shift_value,
-            Button::Keyboard(keyboard::Key::J) => 74 + shift_value,
-            Button::Keyboard(keyboard::Key::K) => 75 + shift_value,
-            Button::Keyboard(keyboard::Key::L) => 76 + shift_value,
-            Button::Keyboard(keyboard::Key::M) => 77 + shift_value,
-            Button::Keyboard(keyboard::Key::N) => 78 + shift_value,
-            Button::Keyboard(keyboard::Key::O) => 79 + shift_value,
-            Button::Keyboard(keyboard::Key::P) => 80 + shift_value,
-            Button::Keyboard(keyboard::Key::Q) => 81 + shift_value,
-            Button::Keyboard(keyboard::Key::R) => 82 + shift_value,
-            Button::Keyboard(keyboard::Key::S) => 83 + shift_value,
-            Button::Keyboard(keyboard::Key::T) => 84 + shift_value,
-            Button::Keyboard(keyboard::Key::U) => 85 + shift_value,
-            Button::Keyboard(keyboard::Key::V) => 86 + shift_value,
-            Button::Keyboard(keyboard::Key::W) => 87 + shift_value,
-            Button::Keyboard(keyboard::Key::X) => 88 + shift_value,
-            Button::Keyboard(keyboard::Key::Y) => 89 + shift_value,
-            Button::Keyboard(keyboard::Key::Z) => 90 + shift_value,
+            Key::A => 65 + shift_value,
+            Key::B => 66 + shift_value,
+            Key::C => 67 + shift_value,
+            Key::D => 68 + shift_value,
+            Key::E => 69 + shift_value,
+            Key::F => 70 + shift_value,
+            Key::G => 71 + shift_value,
+            Key::H => 72 + shift_value,
+            Key::I => 73 + shift_value,
+            Key::J => 74 + shift_value,
+            Key::K => 75 + shift_value,
+            Key::L => 76 + shift_value,
+            Key::M => 77 + shift_value,
+            Key::N => 78 + shift_value,
+            Key::O => 79 + shift_value,
+            Key::P => 80 + shift_value,
+            Key::Q => 81 + shift_value,
+            Key::R => 82 + shift_value,
+            Key::S => 83 + shift_value,
+            Key::T => 84 + shift_value,
+            Key::U => 85 + shift_value,
+            Key::V => 86 + shift_value,
+            Key::W => 87 + shift_value,
+            Key::X => 88 + shift_value,
+            Key::Y => 89 + shift_value,
+            Key::Z => 90 + shift_value,
 
             // other key
-            Button::Keyboard(keyboard::Key::Space) => 32,
-            Button::Keyboard(keyboard::Key::Return) => 128,
-            Button::Keyboard(keyboard::Key::Backspace) => 129,
-            Button::Keyboard(keyboard::Key::Left) => 130,
-            Button::Keyboard(keyboard::Key::Up) => 131,
-            Button::Keyboard(keyboard::Key::Right) => 132,
-            Button::Keyboard(keyboard::Key::Down) => 133,
-            Button::Keyboard(keyboard::Key::Home) => 134,
-            Button::Keyboard(keyboard::Key::End) => 135,
-            Button::Keyboard(keyboard::Key::PageUp) => 136,
-            Button::Keyboard(keyboard::Key::PageDown) => 137,
-            Button::Keyboard(keyboard::Key::Insert) => 138,
-            Button::Keyboard(keyboard::Key::Delete) => 139,
-            Button::Keyboard(keyboard::Key::Escape) => 140,
-            Button::Keyboard(keyboard::Key::F1) => 141,
-            Button::Keyboard(keyboard::Key::F2) => 142,
-            Button::Keyboard(keyboard::Key::F3) => 143,
-            Button::Keyboard(keyboard::Key::F4) => 144,
-            Button::Keyboard(keyboard::Key::F5) => 145,
-            Button::Keyboard(keyboard::Key::F6) => 146,
-            Button::Keyboard(keyboard::Key::F7) => 147,
-            Button::Keyboard(keyboard::Key::F8) => 148,
-            Button::Keyboard(keyboard::Key::F9) => 149,
-            Button::Keyboard(keyboard::Key::F10) => 150,
-            Button::Keyboard(keyboard::Key::F11) => 151,
-            Button::Keyboard(keyboard::Key::F12) => 152,
+            Key::Space => 32,
+            Key::Enter => 128,
+            Key::Backspace => 129,
+            Key::Left => 130,
+            Key::Up => 131,
+            Key::Right => 132,
+            Key::Down => 133,
+            Key::Home => 134,
+            Key::End => 135,
+            Key::PageUp => 136,
+            Key::PageDown => 137,
+            Key::Insert => 138,
+            Key::Delete => 139,
+            Key::Escape => 140,
+            Key::F1 => 141,
+            Key::F2 => 142,
+            Key::F3 => 143,
+            Key::F4 => 144,
+            Key::F5 => 145,
+            Key::F6 => 146,
+            Key::F7 => 147,
+            Key::F8 => 148,
+            Key::F9 => 149,
+            Key::F10 => 150,
+            Key::F11 => 151,
+            Key::F12 => 152,
             _ => 0,
         }
     }
-     */
 }
