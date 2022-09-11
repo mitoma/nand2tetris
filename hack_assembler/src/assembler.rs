@@ -4,18 +4,18 @@ use std::io::{BufRead, BufReader};
 
 use clap::Parser;
 
-enum Command<'a> {
-    Comment(&'a str),
-    Argument(&'a str),
-    Control(&'a str),
-    Loop(&'a str),
-}
-
 #[derive(Parser, Debug)]
 #[clap(author, version, about = "hack assembler", long_about = None)]
 struct Args {
     /// hack program path
     program_path: String,
+}
+
+enum Command<'a> {
+    Comment(&'a str),
+    Argument(&'a str),
+    Control(&'a str),
+    Loop(&'a str),
 }
 
 fn main() {
