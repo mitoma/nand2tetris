@@ -408,6 +408,7 @@ dependencies = [
 name = "hack_computer"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "env_logger",
  "image",
  "log",

@@ -63,11 +63,7 @@ impl Screen {
         let buffer: Vec<u32> = canvas
             .chunks(4)
             .map(|v| {
-                let result = ((v[0] as u32) << 24)
-                    | ((v[1] as u32) << 16)
-                    | (v[2] as u32) << 8
-                    | v[3] as u32;
-                result
+                ((v[0] as u32) << 24) | ((v[1] as u32) << 16) | (v[2] as u32) << 8 | v[3] as u32
             })
             .collect();
 
@@ -112,7 +108,7 @@ impl Screen {
         let keycode = if current_keys.is_empty() {
             0
         } else {
-            let on_shift = current_keys.iter().any(|key| Self::is_shift(key));
+            let on_shift = current_keys.iter().any(Self::is_shift);
             let key = current_keys.iter().find(|key| !Self::is_shift(key));
             key.map(|key| Self::key_to_code(key, on_shift)).unwrap_or(0)
         };
@@ -120,10 +116,7 @@ impl Screen {
     }
 
     fn is_shift(key: &Key) -> bool {
-        match key {
-            Key::LeftShift | Key::RightShift => true,
-            _ => false,
-        }
+        matches!(key, Key::LeftShift | Key::RightShift)
     }
 
     fn key_to_code(key: &Key, on_shift: bool) -> u16 {

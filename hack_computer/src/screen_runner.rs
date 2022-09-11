@@ -15,12 +15,12 @@ fn main() {
     let mut screen = Screen::new(ram);
     screen.ram(
         u2b(0b_1000_0100_0010_0001_u16),
-        u2b14(0b_0000_0000_0000_0000_u16 + 50),
+        u2b14(0b_0000_0000_0000_0000_u16 + 50), // TODO: この 50 の意味はなんだったっけ？
         true,
     );
     while screen.window.is_open() && !screen.window.is_key_down(Key::Escape) {
         screen.draw();
-        //screen.key();
+        screen.key();
     }
 }
 
