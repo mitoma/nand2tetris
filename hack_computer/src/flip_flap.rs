@@ -24,7 +24,7 @@ pub struct Bit {
 
 impl Default for Bit {
     fn default() -> Self {
-        Bit {
+        Self {
             dff: Dff::new(false),
         }
     }
