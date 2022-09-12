@@ -1,26 +1,10 @@
-use flip_flap::*;
-use multi_gate::*;
-use test_util::*;
+use crate::flip_flap::*;
+use crate::multi_gate::*;
+use crate::test_util::*;
 
+#[derive(Default)]
 pub struct Ram8 {
     pub registers: [Register; 8],
-}
-
-impl Default for Ram8 {
-    fn default() -> Self {
-        Ram8 {
-            registers: [
-                Register::default(),
-                Register::default(),
-                Register::default(),
-                Register::default(),
-                Register::default(),
-                Register::default(),
-                Register::default(),
-                Register::default(),
-            ],
-        }
-    }
 }
 
 impl Ram8 {
@@ -40,25 +24,9 @@ impl Ram8 {
     }
 }
 
+#[derive(Default)]
 pub struct Ram64 {
     pub rams: [Ram8; 8],
-}
-
-impl Default for Ram64 {
-    fn default() -> Self {
-        Ram64 {
-            rams: [
-                Ram8::default(),
-                Ram8::default(),
-                Ram8::default(),
-                Ram8::default(),
-                Ram8::default(),
-                Ram8::default(),
-                Ram8::default(),
-                Ram8::default(),
-            ],
-        }
-    }
 }
 
 impl Ram64 {
@@ -81,25 +49,9 @@ impl Ram64 {
     }
 }
 
+#[derive(Default)]
 pub struct Ram512 {
     pub rams: [Ram64; 8],
-}
-
-impl Default for Ram512 {
-    fn default() -> Self {
-        Ram512 {
-            rams: [
-                Ram64::default(),
-                Ram64::default(),
-                Ram64::default(),
-                Ram64::default(),
-                Ram64::default(),
-                Ram64::default(),
-                Ram64::default(),
-                Ram64::default(),
-            ],
-        }
-    }
 }
 
 impl Ram512 {
@@ -124,25 +76,9 @@ impl Ram512 {
     }
 }
 
+#[derive(Default)]
 pub struct Ram4k {
     pub rams: [Ram512; 8],
-}
-
-impl Default for Ram4k {
-    fn default() -> Self {
-        Ram4k {
-            rams: [
-                Ram512::default(),
-                Ram512::default(),
-                Ram512::default(),
-                Ram512::default(),
-                Ram512::default(),
-                Ram512::default(),
-                Ram512::default(),
-                Ram512::default(),
-            ],
-        }
-    }
 }
 
 impl Ram4k {
@@ -200,21 +136,9 @@ impl Ram16kHiSpeed {
     }
 }
 
+#[derive(Default)]
 pub struct Ram16k {
     pub rams: [Ram4k; 4],
-}
-
-impl Default for Ram16k {
-    fn default() -> Self {
-        Ram16k {
-            rams: [
-                Ram4k::default(),
-                Ram4k::default(),
-                Ram4k::default(),
-                Ram4k::default(),
-            ],
-        }
-    }
 }
 
 impl Ram16k {
@@ -274,7 +198,7 @@ impl Ram32kHiSpeed {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use const_value::*;
+    use crate::const_value::*;
 
     #[test]
     fn test_ram8() {

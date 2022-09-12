@@ -1,7 +1,7 @@
-use adder::*;
-use basic_gate::*;
-use const_value;
-use multi_gate::*;
+use crate::adder::*;
+use crate::basic_gate::*;
+use crate::const_value;
+use crate::multi_gate::*;
 
 #[allow(clippy::too_many_arguments)]
 pub fn alu(
@@ -57,9 +57,9 @@ pub fn alu(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_util::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
-    use test_util::*;
 
     #[test]
     fn alu_test() {

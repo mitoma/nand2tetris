@@ -1,4 +1,4 @@
-use basic_gate::*;
+use crate::basic_gate::*;
 
 pub fn not16(a: [bool; 16]) -> [bool; 16] {
     [

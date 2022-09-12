@@ -1,4 +1,4 @@
-use basic_gate::*;
+use crate::basic_gate::*;
 
 pub struct Dff {
     pub pre_value: bool,
@@ -24,7 +24,7 @@ pub struct Bit {
 
 impl Default for Bit {
     fn default() -> Self {
-        Bit {
+        Self {
             dff: Dff::new(false),
         }
     }
@@ -37,33 +37,9 @@ impl Bit {
     }
 }
 
+#[derive(Default)]
 pub struct Register {
     pub bits: [Bit; 16],
-}
-
-impl Default for Register {
-    fn default() -> Self {
-        Register {
-            bits: [
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-                Bit::default(),
-            ],
-        }
-    }
 }
 
 impl Register {
@@ -92,9 +68,9 @@ impl Register {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_util::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
-    use test_util::*;
 
     #[test]
     fn test_dff() {

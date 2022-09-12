@@ -1,7 +1,15 @@
 use std::collections::HashMap;
-use std::env;
 use std::fs;
 use std::io::{BufRead, BufReader};
+
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[clap(author, version, about = "hack assembler", long_about = None)]
+struct Args {
+    /// hack program path
+    program_path: String,
+}
 
 enum Command<'a> {
     Comment(&'a str),
@@ -11,14 +19,8 @@ enum Command<'a> {
 }
 
 fn main() {
-    let program_path = &env::args().nth(1);
-    match program_path {
-        Some(path) => assemble(path),
-        None => {
-            println!("hack バイナリのパスを指定してください");
-            std::process::exit(0)
-        }
-    }
+    let args = Args::parse();
+    assemble(&args.program_path);
 }
 
 fn assemble(program_path: &str) {
@@ -35,7 +37,7 @@ fn assemble(program_path: &str) {
         .map(|l| l.trim().to_owned())
         .collect();
 
-    let commands: Vec<Command> = lines.iter().map(|l| parse_command(&l)).collect();
+    let commands: Vec<Command> = lines.iter().map(|l| parse_command(l)).collect();
 
     let mut symbol_table = create_symble_table(&commands);
 
@@ -67,7 +69,7 @@ fn assemble(program_path: &str) {
 
 fn parse_command(line: &str) -> Command {
     match line {
-        v if v.starts_with("//") => Command::Comment(&v),
+        v if v.starts_with("//") => Command::Comment(v),
         v if v.starts_with('@') => {
             let symbol_name = &v[1..];
             Command::Argument(symbol_name)
@@ -90,7 +92,7 @@ fn create_symble_table<'a>(commands: &'a [Command]) -> HashMap<&'a str, u16> {
     for command in commands {
         match command {
             Command::Loop(v) => {
-                symbol_table.insert(&v, current_line_num);
+                symbol_table.insert(v, current_line_num);
             }
             Command::Comment(_) => (),
             Command::Argument(_) | Command::Control(_) => current_line_num += 1,
@@ -158,7 +160,7 @@ fn parse_c_command(command: &str) -> String {
     };
     let command = match command.find('=') {
         Some(v) => command.split_at(v + 1).1,
-        _ => &command,
+        _ => command,
     };
     let command = match command.find(';') {
         Some(v) => command.split_at(v).0,

@@ -1,10 +1,11 @@
-use alu::*;
-use basic_gate::*;
-use const_value::*;
-use counter::*;
-use flip_flap::*;
-use multi_gate::*;
+use crate::alu::*;
+use crate::basic_gate::*;
+use crate::const_value::*;
+use crate::counter::*;
+use crate::flip_flap::*;
+use crate::multi_gate::*;
 
+#[derive(Default)]
 pub struct Cpu {
     pub a_register: Register,
     pub d_register: Register,
@@ -16,16 +17,6 @@ pub struct CpuResult {
     pub write_memory: bool,
     pub address_memory: [bool; 15],
     pub pc: [bool; 15],
-}
-
-impl Default for Cpu {
-    fn default() -> Self {
-        Cpu {
-            a_register: Register::default(),
-            d_register: Register::default(),
-            pc: Counter::default(),
-        }
-    }
 }
 
 impl Cpu {
@@ -132,9 +123,9 @@ impl Cpu {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_util::*;
     use std::fs;
     use std::io::{BufRead, BufReader};
-    use test_util::*;
 
     #[test]
     fn test_cpu() {

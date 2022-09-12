@@ -1,18 +1,11 @@
-use adder::*;
-use const_value::*;
-use flip_flap::*;
-use multi_gate::*;
+use crate::adder::*;
+use crate::const_value::*;
+use crate::flip_flap::*;
+use crate::multi_gate::*;
 
+#[derive(Default)]
 pub struct Counter {
     register: Register,
-}
-
-impl Default for Counter {
-    fn default() -> Self {
-        Counter {
-            register: Register::default(),
-        }
-    }
 }
 
 impl Counter {
@@ -38,7 +31,7 @@ impl Counter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test_util::*;
+    use crate::test_util::*;
 
     #[test]
     fn test_counter() {

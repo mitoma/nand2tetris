@@ -1,7 +1,3 @@
-extern crate image;
-extern crate piston;
-extern crate piston_window;
-
 pub mod adder;
 pub mod alu;
 pub mod basic_gate;

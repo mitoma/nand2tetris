@@ -1,12 +1,12 @@
-use basic_gate::*;
-use const_value::*;
-use cpu::{Cpu, CpuResult};
-use multi_gate::*;
-use ram::{Ram16kHiSpeed, Ram32kHiSpeed};
-use screen::Screen;
+use crate::basic_gate::*;
+use crate::const_value::*;
+use crate::cpu::{Cpu, CpuResult};
+use crate::multi_gate::*;
+use crate::ram::{Ram16kHiSpeed, Ram32kHiSpeed};
+use crate::screen::Screen;
+use crate::test_util::*;
 use std::fs;
 use std::io::{BufRead, BufReader};
-use test_util::*;
 
 pub struct Computer {
     pub rom: Ram32kHiSpeed,
@@ -41,7 +41,7 @@ impl Computer {
         //let mut counter = 0;
         for (i, line) in reader.lines().enumerate() {
             let word = u16::from_str_radix(line.unwrap().trim(), 2).unwrap();
-            println!("line:{:06}, word:{:016b}, ({})", i, word, word);
+            log::debug!("line:{:06}, word:{:016b}, ({})", i, word, word);
             self.rom.ram(u2b(word), u2b15(i as u16), true);
         }
     }
@@ -58,17 +58,17 @@ impl Computer {
             add14,
             and(not(add15[14]), self.pre_cpu_result.write_memory),
         );
-        let io_data = self.screen.ram.ram(
+        let io_data = self.screen.ram(
             self.pre_cpu_result.out_memory,
             add14,
             and(add15[14], self.pre_cpu_result.write_memory),
         );
 
         if and(not(add15[14]), self.pre_cpu_result.write_memory) {
-            println!("                                                                            write memory!");
+            log::debug!("                                                                            write memory!");
         }
         if and(add15[14], self.pre_cpu_result.write_memory) {
-            println!("                                                                            write screen!");
+            log::debug!("                                                                            write screen!");
         }
 
         let in_memory = mux16(ram_data, io_data, add15[14]);
@@ -77,32 +77,35 @@ impl Computer {
         let a_register_current_value = self.cpu.a_register.register(ZERO, false);
         let d_register_current_value = self.cpu.d_register.register(ZERO, false);
 
-        println!();
-        println!("--------------------------------------------------------");
-        println!("in_memory:1---2---3---4---, instruction:CxxAC-----D--J--",);
-        println!(
+        log::debug!("");
+        log::debug!("--------------------------------------------------------");
+        log::debug!("in_memory:1---2---3---4---, instruction:CxxAC-----D--J--",);
+        log::debug!(
             "address_memory:{:016b}",
             b152u(self.pre_cpu_result.address_memory),
         );
-        println!(
-            "in_memory:{:016b}, instruction:{:016b}, pc:{:04?}\nd_register:{:016b}, a_register:{:016b}",
+        log::debug!(
+            "in_memory:{:016b}, instruction:{:016b}, pc:{:04?}",
             b2u(in_memory),
             b2u(instruction),
-            b152u(self.pre_cpu_result.pc) ,
+            b152u(self.pre_cpu_result.pc),
+        );
+        log::debug!(
+            "d_register:{:016b}, a_register:{:016b}",
             b2u(d_register_current_value),
             b2u(a_register_current_value),
         );
-        println!("execute");
+        log::debug!("execute");
         self.pre_cpu_result = self.cpu.cycle(in_memory, instruction, reset);
 
         let a_register_post_value = self.cpu.a_register.register(ZERO, false);
         let d_register_post_value = self.cpu.d_register.register(ZERO, false);
-        println!(
+        log::debug!(
             "d_register:{:016b}, a_register:{:016b}",
             b2u(d_register_post_value),
             b2u(a_register_post_value),
         );
-        println!(
+        log::debug!(
             "out_memory:{:016b}, address_memory:{:016b}",
             b2u(self.pre_cpu_result.out_memory),
             b152u(self.pre_cpu_result.address_memory),

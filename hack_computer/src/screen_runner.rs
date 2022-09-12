@@ -3,35 +3,32 @@ extern crate hack_computer;
 use hack_computer::ram::*;
 use hack_computer::screen::*;
 use hack_computer::test_util::*;
-
-use std::thread;
+use minifb::Key;
 
 fn main() {
-    // main thread の stack サイズの都合で thread を新たに作っている
-    // https://qiita.com/szktty/items/8a6e26f4b829d3689fce
-    let builder = thread::Builder::new();
-    let thread = builder.stack_size(10000000);
-    let handle = thread
-        .spawn(|| {
-            let ram = Ram16kHiSpeed::default();
+    std::env::set_var("RUST_LOG", "debug");
+    env_logger::init();
+    let mut ram = Ram16kHiSpeed::default();
 
-            // ram = draw_data(ram);
+    ram = draw_data(ram);
 
-            let mut screen = Screen::new(ram);
-            while let Some(e) = screen.window.next() {
-                screen.draw(&e);
-                screen.key(&e);
-            }
-        })
-        .unwrap();
-    let _ = handle.join();
+    let mut screen = Screen::new(ram);
+    screen.ram(
+        u2b(0b_1000_0100_0010_0001_u16),
+        u2b14(50), // TODO: この 50 の意味はなんだったっけ？
+        true,
+    );
+    while screen.window.is_open() && !screen.window.is_key_down(Key::Escape) {
+        screen.draw();
+        screen.key();
+    }
 }
 
 // 画面へのデータ出力のテスト
 #[allow(dead_code, clippy::identity_op)]
 #[rustfmt::skip]
 fn draw_data(mut ram: Ram16kHiSpeed) -> Ram16kHiSpeed {
-    for i in 0..16 {
+    for i in 0..32 {
         // draw A
         ram.ram(
             u2b(0b_1111_0001_1000_1111_u16),
