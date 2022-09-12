@@ -13,14 +13,16 @@ jobs:
         uses: mitoma/sver/.github/actions/exec_sver@v0.1.6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          phase: check-${{ matrix.target }}-${{ matrix.os }}
+          phase: check
           command: |
             cargo fmt --all -- --check
             cargo clippy -- -D warnings
             cargo build
             cargo test
-          cache_key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          cache_restore-keys: ${{ matrix.os }}-cargo-
+          cache_key: cargo-${{ hashFiles('**/Cargo.lock') }}
+          cache_restore-keys: |
+            cargo-${{ hashFiles('**/Cargo.lock') }}
+            cargo-
           cache_path: |
             ~/.cargo/registry
             ~/.cargo/git
