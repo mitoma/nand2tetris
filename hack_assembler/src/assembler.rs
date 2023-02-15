@@ -62,7 +62,7 @@ fn assemble(program_path: &str) {
             Command::Loop(_) | Command::Comment(_) => None,
         };
         if let Some(line) = asm_line {
-            println!("{}", line);
+            println!("{line}");
         }
     }
 }
@@ -197,5 +197,5 @@ fn parse_c_command(command: &str) -> String {
         "D|M" => "1010101",
         _ => "",
     };
-    format!("111{}{}{}", comp, dest, jump)
+    format!("111{comp}{dest}{jump}")
 }

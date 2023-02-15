@@ -68,10 +68,10 @@ mod tests {
 
         let mut counter = 0;
         for line in reader.lines().skip(1) {
-            counter = counter + 1;
+            counter += 1;
             let l = line.unwrap();
             let tokens = l
-                .split("|")
+                .split('|')
                 .map(|str| str.trim())
                 .filter(|str| !str.is_empty())
                 .collect::<Vec<&str>>();
@@ -105,10 +105,10 @@ mod tests {
 
         let mut counter = 0;
         for line in reader.lines().skip(1) {
-            counter = counter + 1;
+            counter += 1;
             let l = line.unwrap();
             let tokens = l
-                .split("|")
+                .split('|')
                 .map(|str| str.trim())
                 .filter(|str| !str.is_empty())
                 .collect::<Vec<&str>>();
