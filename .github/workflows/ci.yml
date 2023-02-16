@@ -17,6 +17,7 @@ jobs:
           echo ${{ github.event.repository.default_branch }}
           echo "compare"
           echo ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+          echo ${{ github.ref == format('refs/heads/{0}', 'test-sver-actions') }}
       - name: check all
         uses: mitoma/sver-actions/exec@support-restore-only
         with:
@@ -28,7 +29,8 @@ jobs:
             cargo build
             cargo test
           # default ブランチの時だけ cache を保存する
-          cache_save_enable: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+          # cache_save_enable: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+          cache_save_enable: ${{ github.ref == format('refs/heads/{0}', 'test-sver-actions') }}
           cache_key: cargo-${{ hashFiles('**/Cargo.lock') }}
           cache_restore-keys: |
             cargo-${{ hashFiles('**/Cargo.lock') }}
