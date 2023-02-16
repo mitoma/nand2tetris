@@ -9,4 +9,4 @@ name = "assembler"
 path = "src/assembler.rs"
 
 [dependencies]
-clap = { version = "3.2", features = ["derive"] }
+clap = { version = "4.1", features = ["derive"] }
