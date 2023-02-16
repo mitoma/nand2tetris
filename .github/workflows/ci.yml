@@ -11,8 +11,12 @@ jobs:
       - uses: mitoma/sver-actions/setup@support-restore-only
       - name: echo branch
         run: |
+          echo "github.ref"
           echo ${{ github.ref }}
+          echo "default_branch"
           echo ${{ github.event.repository.default_branch }}
+          echo "compare"
+          echo ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
       - name: check all
         uses: mitoma/sver-actions/exec@support-restore-only
         with:
