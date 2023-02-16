@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: mitoma/sver-actions/setup@main
+      - uses: mitoma/sver-actions/setup@support-restore-only
       - name: check all
-        uses: mitoma/sver-actions/exec@main
+        uses: mitoma/sver-actions/exec@support-restore-only
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           phase: check
