@@ -9,6 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: mitoma/sver-actions/setup@support-restore-only
+      - name: echo branch
+        command: |
+          echo ${{ github.ref }}
+          echo ${{ github.event.repository.default_branch }}
       - name: check all
         uses: mitoma/sver-actions/exec@support-restore-only
         with:
@@ -19,7 +23,7 @@ jobs:
             cargo clippy -- -D warnings
             cargo build
             cargo test
-          cache_save_enable: ${{ github.event.repository.default_branch }}
+          cache_save_enable: ${{ github.ref == github.event.repository.default_branch }}
           cache_key: cargo-${{ hashFiles('**/Cargo.lock') }}
           cache_restore-keys: |
             cargo-${{ hashFiles('**/Cargo.lock') }}
