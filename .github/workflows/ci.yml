@@ -19,6 +19,7 @@ jobs:
             cargo clippy -- -D warnings
             cargo build
             cargo test
+          cache_save_enable: ${{ github.event.repository.default_branch }}
           cache_key: cargo-${{ hashFiles('**/Cargo.lock') }}
           cache_restore-keys: |
             cargo-${{ hashFiles('**/Cargo.lock') }}
