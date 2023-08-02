@@ -13,7 +13,7 @@ name = "computer_runner"
 path = "src/computer_runner.rs"
 
 [dependencies]
-minifb = "0.24"
+minifb = "0.25"
 image = "0.24"
 log = "0.4"
 env_logger = "0.10"
