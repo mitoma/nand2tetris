@@ -78,7 +78,7 @@ fn parse_command(line: &str) -> Command {
             let symbol_name = v.trim_matches(&['(', ')'] as &[_]);
             Command::Loop(symbol_name)
         }
-        v if v.is_empty() => Command::Comment("empty"),
+        "" => Command::Comment("empty"),
         v => Command::Control(v),
     }
 }
