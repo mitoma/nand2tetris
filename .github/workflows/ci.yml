@@ -7,7 +7,7 @@ jobs:
   check-all:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: mitoma/sver-actions/setup@v2
       - name: check all
         uses: mitoma/sver-actions/exec@v2
